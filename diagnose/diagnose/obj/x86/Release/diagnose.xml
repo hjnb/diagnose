@@ -6,7 +6,143 @@ diagnose
 </name>
 </assembly>
 <members>
-<member name="P:diagnose.My.Resources.Resources.ResourceManager">
+<member name="M:diagnose.Util.EnableDoubleBuffering(System.Windows.Forms.Control)">
+	<summary>
+ コントロールのDoubleBufferedプロパティをTrueにする
+ </summary>
+	<param name="control">対象のコントロール</param>
+</member><member name="M:diagnose.Util.checkDBNullValue(System.Object)">
+	<summary>
+ dgvのセルの値がNullかチェック、Nullの場合空文字を返す
+ </summary>
+	<param name="dgvCellValue"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:diagnose.Util.convADStrToWarekiStr(System.String)">
+	<summary>
+ 西暦(yyyy/MM/dd)を和暦に変換
+ </summary>
+	<param name="adStr"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:diagnose.Util.convWarekiStrToADStr(System.String)">
+	<summary>
+ 和暦を西暦に変換
+ </summary>
+	<param name="warekiStr"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:diagnose.Util.getKanji(System.String)">
+	<summary>
+ 和暦の漢字を取得
+ </summary>
+	<param name="warekiStr"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:diagnose.Util.getIniString(System.String,System.String,System.String)">
+	<summary>
+ iniファイルから読み込み
+ </summary>
+	<param name="lpSection">セクション名</param>
+	<param name="lpKeyName">読み込むkey名</param>
+	<param name="lpFileName">iniファイルパス</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:diagnose.Util.putIniString(System.String,System.String,System.String,System.String)">
+	<summary>
+ iniファイルへ書き込み
+ </summary>
+	<param name="lpSection">セクション名</param>
+	<param name="lpKeyName">書き込む対象のkey名</param>
+	<param name="lpValue">書き込む値</param>
+	<param name="lpFileName">iniファイルパス</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.topForm_Load(System.Object,System.EventArgs)">
+	<summary>
+ loadイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.topPicture_Click(System.Object,System.EventArgs)">
+	<summary>
+ トップ画像クリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnExamineeMaster_Click(System.Object,System.EventArgs)">
+	<summary>
+ 受診者マスタボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnOfficeMaster_Click(System.Object,System.EventArgs)">
+	<summary>
+ 事業所マスタボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnExaminationStatus_Click(System.Object,System.EventArgs)">
+	<summary>
+ 月別受診状況ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnCriteriaValueMaster_Click(System.Object,System.EventArgs)">
+	<summary>
+ 基準値マスタボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnExamineeList_Click(System.Object,System.EventArgs)">
+	<summary>
+ 受診者一覧ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnImplementationHistory_Click(System.Object,System.EventArgs)">
+	<summary>
+ 事業所別実施履歴ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnResultReport_Click(System.Object,System.EventArgs)">
+	<summary>
+ 健診結果報告書ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnMaintenance_Click(System.Object,System.EventArgs)">
+	<summary>
+ 保守ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnDBArrangement_Click(System.Object,System.EventArgs)">
+	<summary>
+ DB整理ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.topForm.btnEnquete_Click(System.Object,System.EventArgs)">
+	<summary>
+ アンケートシステムボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="P:diagnose.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
 </summary>

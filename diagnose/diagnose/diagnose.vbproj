@@ -72,11 +72,17 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.vb">
+    <Compile Include="DB整理.Designer.vb">
+      <DependentUpon>DB整理.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DB整理.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.vb">
-      <DependentUpon>Form1.vb</DependentUpon>
+    <Compile Include="topForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="topForm.Designer.vb">
+      <DependentUpon>topForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -94,6 +100,61 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Util.vb" />
+    <Compile Include="アンケートシステム.Designer.vb">
+      <DependentUpon>アンケートシステム.vb</DependentUpon>
+    </Compile>
+    <Compile Include="アンケートシステム.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="事業所マスタ.Designer.vb">
+      <DependentUpon>事業所マスタ.vb</DependentUpon>
+    </Compile>
+    <Compile Include="事業所マスタ.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="事業所別実施履歴.Designer.vb">
+      <DependentUpon>事業所別実施履歴.vb</DependentUpon>
+    </Compile>
+    <Compile Include="事業所別実施履歴.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="保守.Designer.vb">
+      <DependentUpon>保守.vb</DependentUpon>
+    </Compile>
+    <Compile Include="保守.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="健診結果報告書.Designer.vb">
+      <DependentUpon>健診結果報告書.vb</DependentUpon>
+    </Compile>
+    <Compile Include="健診結果報告書.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="受診者マスタ.Designer.vb">
+      <DependentUpon>受診者マスタ.vb</DependentUpon>
+    </Compile>
+    <Compile Include="受診者マスタ.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="受診者一覧.Designer.vb">
+      <DependentUpon>受診者一覧.vb</DependentUpon>
+    </Compile>
+    <Compile Include="受診者一覧.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="基準値マスタ.Designer.vb">
+      <DependentUpon>基準値マスタ.vb</DependentUpon>
+    </Compile>
+    <Compile Include="基準値マスタ.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="月別受診状況.Designer.vb">
+      <DependentUpon>月別受診状況.vb</DependentUpon>
+    </Compile>
+    <Compile Include="月別受診状況.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -101,6 +162,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="topForm.resx">
+      <DependentUpon>topForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

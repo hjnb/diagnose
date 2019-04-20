@@ -16,6 +16,9 @@
     Public dbHealth3FilePath As String = Util.getIniString("System", "HealthDir", iniFilePath) & "\Health3.mdb"
     Public DB_Health3 As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & dbHealth3FilePath
 
+    'SealBoxフォルダパス
+    Public sealBoxDirPath As String = Util.getIniString("System", "SealBoxDir", iniFilePath)
+
     '各フォーム
     Dim examineeMasterForm As 受診者マスタ
     Dim officeMasterForm As 事業所マスタ

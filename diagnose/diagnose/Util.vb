@@ -229,6 +229,23 @@ Public Class Util
         Dim result As Long = WritePrivateProfileString(lpSection, lpKeyName, lpValue, lpFileName)
         Return result <> 0
     End Function
+
+    ''' <summary>
+    ''' 現在年齢算出
+    ''' </summary>
+    ''' <param name="birthYmd"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Shared Function calcAge(birthYmd As String, nowYmd As String) As Integer
+        Dim doDate As DateTime = New DateTime(CInt(nowYmd.Split("/")(0)), CInt(nowYmd.Split("/")(1)), CInt(nowYmd.Split("/")(2)))
+        Dim birthDate As DateTime = New DateTime(CInt(birthYmd.Split("/")(0)), CInt(birthYmd.Split("/")(1)), CInt(birthYmd.Split("/")(2)))
+        Dim age As Integer = doDate.Year - birthDate.Year
+        '誕生日がまだ来ていなければ、1引く
+        If doDate.Month < birthDate.Month OrElse (doDate.Month = birthDate.Month AndAlso doDate.Day < birthDate.Day) Then
+            age -= 1
+        End If
+        Return age
+    End Function
 End Class
 
 

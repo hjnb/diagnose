@@ -1,6 +1,12 @@
 ﻿Imports System.Data.OleDb
 
 Public Class 受診者マスタ
+
+    'B5健診結果入力フォーム
+    Private b5InputForm As B5InputForm
+    'A4健診結果入力フォーム
+    Private a4InputForm As A4InputForm
+
     ''' <summary>
     ''' 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
     ''' </summary>
@@ -158,6 +164,15 @@ Public Class 受診者マスタ
     Private Sub displayDgvMaster(ind As String)
         '内容クリア
         dgvMaster.Columns.Clear()
+        namBox.Text = ""
+        kanaBox.Text = ""
+        sexBox.Text = ""
+        birthBox.clearText()
+        telBox.Text = ""
+        postBox.Text = ""
+        jyuBox.Text = ""
+        TanBox.Text = ""
+        commentBox.Text = ""
 
         'データ取得
         Dim cnn As New ADODB.Connection
@@ -174,6 +189,7 @@ Public Class 受診者マスタ
         dt.Columns.Add("List", GetType(Boolean)) '名簿
         dt.Columns.Add("LastDate", GetType(String)) '実施日
         dt.Columns.Add("Decision", GetType(String)) '判定
+        Const SEARCH_CHAR As String = "要"
         For Each row As DataRow In dt.Rows
             '名簿列デフォルトでチェック有
             row("List") = True
@@ -192,9 +208,9 @@ Public Class 受診者マスタ
                 Dim d72 As String = Util.checkDBNullValue(row("D72")).Replace("　", " ")
                 Dim d73 As String = Util.checkDBNullValue(row("D73")).Replace("　", " ")
                 Dim d74 As String = Util.checkDBNullValue(row("D74")).Replace("　", " ")
-                Dim d72Index As Integer = d72.IndexOf("要")
-                Dim d73Index As Integer = d73.IndexOf("要")
-                Dim d74Index As Integer = d74.IndexOf("要")
+                Dim d72Index As Integer = d72.IndexOf(SEARCH_CHAR)
+                Dim d73Index As Integer = d73.IndexOf(SEARCH_CHAR)
+                Dim d74Index As Integer = d74.IndexOf(SEARCH_CHAR)
                 If d72Index >= 0 Then
                     Dim d72you As String = d72.Substring(d72Index, d72.Length - d72Index)
                     decisionList.Add(d72you.Split(" ")(0))
@@ -214,11 +230,11 @@ Public Class 受診者マスタ
                 Dim d78 As String = Util.checkDBNullValue(row("D78")).Replace("　", " ")
                 Dim d79 As String = Util.checkDBNullValue(row("D79")).Replace("　", " ")
                 Dim d80 As String = Util.checkDBNullValue(row("D80")).Replace("　", " ")
-                Dim d76Index As Integer = d76.IndexOf("要")
-                Dim d77Index As Integer = d77.IndexOf("要")
-                Dim d78Index As Integer = d78.IndexOf("要")
-                Dim d79Index As Integer = d79.IndexOf("要")
-                Dim d80Index As Integer = d80.IndexOf("要")
+                Dim d76Index As Integer = d76.IndexOf(SEARCH_CHAR)
+                Dim d77Index As Integer = d77.IndexOf(SEARCH_CHAR)
+                Dim d78Index As Integer = d78.IndexOf(SEARCH_CHAR)
+                Dim d79Index As Integer = d79.IndexOf(SEARCH_CHAR)
+                Dim d80Index As Integer = d80.IndexOf(SEARCH_CHAR)
                 If d76Index >= 0 Then
                     Dim d76you As String = d76.Substring(d76Index, d76.Length - d76Index)
                     decisionList.Add(d76you.Split(" ")(0))
@@ -319,7 +335,7 @@ Public Class 受診者マスタ
                 .HeaderText = "実施日"
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .SortMode = DataGridViewColumnSortMode.NotSortable
-                .Width = 120
+                .Width = 110
                 .ReadOnly = True
             End With
             With .Columns("Decision")
@@ -328,9 +344,9 @@ Public Class 受診者マスタ
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
                 .SortMode = DataGridViewColumnSortMode.NotSortable
                 If dgvMaster.Rows.Count > 20 Then
-                    .Width = 123
+                    .Width = 133
                 Else
-                    .Width = 140
+                    .Width = 150
                 End If
                 .ReadOnly = True
             End With
@@ -338,14 +354,14 @@ Public Class 受診者マスタ
                 .HeaderText = "TEL"
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
                 .SortMode = DataGridViewColumnSortMode.NotSortable
-                .Width = 90
+                .Width = 100
                 .ReadOnly = True
             End With
             With .Columns("Post")
                 .HeaderText = "〒"
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
                 .SortMode = DataGridViewColumnSortMode.NotSortable
-                .Width = 70
+                .Width = 80
                 .ReadOnly = True
             End With
             With .Columns("Jyu")
@@ -371,6 +387,9 @@ Public Class 受診者マスタ
                 .ReadOnly = True
             End With
         End With
+
+        'フォーカス
+        namBox.Focus()
     End Sub
 
     ''' <summary>
@@ -480,5 +499,297 @@ Public Class 受診者マスタ
     Private Sub dgvMaster_ColumnHeaderMouseDoubleClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles dgvMaster.ColumnHeaderMouseDoubleClick
         Dim targetColumn As DataGridViewColumn = dgvMaster.Columns(e.ColumnIndex) '選択列
         dgvMaster.Sort(targetColumn, System.ComponentModel.ListSortDirection.Ascending) '昇順でソート
+    End Sub
+
+    ''' <summary>
+    ''' 登録ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnRegist_Click(sender As System.Object, e As System.EventArgs) Handles btnRegist.Click
+        '事業所名
+        Dim ind As String = indBox.Text
+        If ind = "" Then
+            MsgBox("事業所名を選択して下さい。", MsgBoxStyle.Exclamation)
+            indBox.Focus()
+            Return
+        End If
+        '氏名
+        Dim nam As String = namBox.Text
+        If nam = "" Then
+            MsgBox("氏名を入力して下さい。", MsgBoxStyle.Exclamation)
+            namBox.Focus()
+            Return
+        End If
+        'カナ
+        Dim kana As String = kanaBox.Text
+        If kana = "" Then
+            MsgBox("カナを入力して下さい。", MsgBoxStyle.Exclamation)
+            kanaBox.Focus()
+            Return
+        End If
+        '性別
+        Dim sex As String = sexBox.Text
+        If Not (sex = "1" OrElse sex = "2") Then
+            MsgBox("性別を正しく入力して下さい。", MsgBoxStyle.Exclamation)
+            sexBox.Focus()
+            Return
+        End If
+        '生年月日
+        Dim birth As String = birthBox.getADStr()
+        If birth = "" Then
+            MsgBox("生年月日を入力して下さい。", MsgBoxStyle.Exclamation)
+            birthBox.Focus()
+            Return
+        End If
+        'TEL
+        Dim tel As String = telBox.Text
+        '〒
+        Dim post As String = postBox.Text
+        '住所
+        Dim jyu As String = jyuBox.Text
+        '単価
+        Dim tan As String = TanBox.Text
+        If tan = "" Then
+            tan = "0"
+        End If
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tan, "^\d+$") Then
+            MsgBox("単価は数値を入力して下さい。", MsgBoxStyle.Exclamation)
+            TanBox.Focus()
+            Return
+        End If
+        'コメント
+        Dim comment As String = commentBox.Text
+
+        '登録
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim sql As String = "select * from UsrM where Ind = '" & ind & "' and Kana = '" & kana & "' and Birth = '" & birth & "'"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            '新規登録
+            rs.AddNew()
+            rs.Fields("Ind").Value = ind
+            rs.Fields("Nam").Value = nam
+            rs.Fields("Kana").Value = kana
+            rs.Fields("Sex").Value = sex
+            rs.Fields("Birth").Value = birth
+            rs.Fields("Tel").Value = tel
+            rs.Fields("Post").Value = post
+            rs.Fields("Jyu").Value = jyu
+            rs.Fields("Tan").Value = tan
+            rs.Fields("Text").Value = comment
+            rs.Update()
+            rs.Close()
+            cn.Close()
+
+            '再表示
+            displayDgvMaster(ind)
+        Else
+            '更新登録
+            Dim result As DialogResult = MessageBox.Show("変更してよろしいですか？", "変更", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = Windows.Forms.DialogResult.Yes Then
+                rs.Fields("Ind").Value = ind
+                rs.Fields("Nam").Value = nam
+                rs.Fields("Kana").Value = kana
+                rs.Fields("Sex").Value = sex
+                rs.Fields("Birth").Value = birth
+                rs.Fields("Tel").Value = tel
+                rs.Fields("Post").Value = post
+                rs.Fields("Jyu").Value = jyu
+                rs.Fields("Tan").Value = tan
+                rs.Fields("Text").Value = comment
+                rs.Update()
+                rs.Close()
+                cn.Close()
+
+                '再表示
+                displayDgvMaster(ind)
+            Else
+                rs.Close()
+                cn.Close()
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 削除ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnDelete.Click
+        '事業所名
+        Dim ind As String = indBox.Text
+        If ind = "" Then
+            MsgBox("事業所名を選択して下さい。", MsgBoxStyle.Exclamation)
+            indBox.Focus()
+            Return
+        End If
+        '氏名
+        Dim nam As String = namBox.Text
+        If nam = "" Then
+            MsgBox("氏名を入力して下さい。", MsgBoxStyle.Exclamation)
+            namBox.Focus()
+            Return
+        End If
+        'カナ
+        Dim kana As String = kanaBox.Text
+        If kana = "" Then
+            MsgBox("カナを入力して下さい。", MsgBoxStyle.Exclamation)
+            kanaBox.Focus()
+            Return
+        End If
+        '性別
+        Dim sex As String = sexBox.Text
+        If Not (sex = "1" OrElse sex = "2") Then
+            MsgBox("性別を正しく入力して下さい。", MsgBoxStyle.Exclamation)
+            sexBox.Focus()
+            Return
+        End If
+        '生年月日
+        Dim birth As String = birthBox.getADStr()
+        If birth = "" Then
+            MsgBox("生年月日を入力して下さい。", MsgBoxStyle.Exclamation)
+            birthBox.Focus()
+            Return
+        End If
+
+        '削除
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim sql As String = "select * from UsrM where Ind = '" & ind & "' and Kana = '" & kana & "' and Birth = '" & birth & "'"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            MsgBox("登録されていません。", MsgBoxStyle.Exclamation)
+            rs.Close()
+            cn.Close()
+            Return
+        Else
+            Dim result As DialogResult = MessageBox.Show("削除してよろしいですか？", "削除", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = Windows.Forms.DialogResult.Yes Then
+                rs.Delete()
+                rs.Update()
+                rs.Close()
+                cn.Close()
+
+                '再表示
+                displayDgvMaster(ind)
+            Else
+                rs.Close()
+                cn.Close()
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' B5診断書印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnB5Paper_Click(sender As System.Object, e As System.EventArgs) Handles btnB5Paper.Click
+        '事業所名
+        Dim ind As String = indBox.Text
+        If ind = "" Then
+            MsgBox("事業所名を選択して下さい。", MsgBoxStyle.Exclamation)
+            indBox.Focus()
+            Return
+        End If
+        '氏名
+        Dim nam As String = namBox.Text
+        If nam = "" Then
+            MsgBox("氏名を入力して下さい。", MsgBoxStyle.Exclamation)
+            namBox.Focus()
+            Return
+        End If
+        'カナ
+        Dim kana As String = kanaBox.Text
+        If kana = "" Then
+            MsgBox("カナを入力して下さい。", MsgBoxStyle.Exclamation)
+            kanaBox.Focus()
+            Return
+        End If
+        '性別
+        Dim sex As String = sexBox.Text
+        If Not (sex = "1" OrElse sex = "2") Then
+            MsgBox("性別を正しく入力して下さい。", MsgBoxStyle.Exclamation)
+            sexBox.Focus()
+            Return
+        End If
+        '生年月日
+        Dim birth As String = birthBox.getADStr()
+        If birth = "" Then
+            MsgBox("生年月日を入力して下さい。", MsgBoxStyle.Exclamation)
+            birthBox.Focus()
+            Return
+        End If
+
+        '印刷前フォーム表示
+        Dim pf As New beforePrintForm(ind, nam, kana, sex, birth, 1, rbtnPrint.Checked)
+        If pf.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            '健診結果入力フォーム表示
+            If IsNothing(b5InputForm) OrElse b5InputForm.IsDisposed Then
+                b5InputForm = New B5InputForm(ind, nam, kana, sex, birth, rbtnPrint.Checked)
+                b5InputForm.Show()
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' A4診断書印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnA4Paper_Click(sender As System.Object, e As System.EventArgs) Handles btnA4Paper.Click
+        '事業所名
+        Dim ind As String = indBox.Text
+        If ind = "" Then
+            MsgBox("事業所名を選択して下さい。", MsgBoxStyle.Exclamation)
+            indBox.Focus()
+            Return
+        End If
+        '氏名
+        Dim nam As String = namBox.Text
+        If nam = "" Then
+            MsgBox("氏名を入力して下さい。", MsgBoxStyle.Exclamation)
+            namBox.Focus()
+            Return
+        End If
+        'カナ
+        Dim kana As String = kanaBox.Text
+        If kana = "" Then
+            MsgBox("カナを入力して下さい。", MsgBoxStyle.Exclamation)
+            kanaBox.Focus()
+            Return
+        End If
+        '性別
+        Dim sex As String = sexBox.Text
+        If Not (sex = "1" OrElse sex = "2") Then
+            MsgBox("性別を正しく入力して下さい。", MsgBoxStyle.Exclamation)
+            sexBox.Focus()
+            Return
+        End If
+        '生年月日
+        Dim birth As String = birthBox.getADStr()
+        If birth = "" Then
+            MsgBox("生年月日を入力して下さい。", MsgBoxStyle.Exclamation)
+            birthBox.Focus()
+            Return
+        End If
+
+        '印刷前フォーム表示
+        Dim pf As New beforePrintForm(ind, nam, kana, sex, birth, 2, rbtnPrint.Checked)
+        If pf.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            '健診結果入力フォーム表示
+            If IsNothing(a4InputForm) OrElse a4InputForm.IsDisposed Then
+                a4InputForm = New A4InputForm()
+                a4InputForm.Show()
+            End If
+        End If
     End Sub
 End Class

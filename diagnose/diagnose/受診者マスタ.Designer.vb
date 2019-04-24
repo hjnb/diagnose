@@ -171,6 +171,7 @@ Partial Class 受診者マスタ
         '
         'indBox
         '
+        Me.indBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.indBox.Font = New System.Drawing.Font("MS UI Gothic", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.indBox.FormattingEnabled = True
         Me.indBox.Location = New System.Drawing.Point(160, 32)

@@ -6,7 +6,42 @@ diagnose
 </name>
 </assembly>
 <members>
-<member name="P:diagnose.My.Resources.Resources.ResourceManager">
+<member name="M:diagnose.B5InputForm.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean)">
+	<summary>
+ コンストラクタ
+ </summary>
+	<param name="ind">事業所名</param>
+	<param name="nam">氏名</param>
+	<param name="kana">カナ</param>
+	<param name="sex">性別</param>
+	<param name="birth">生年月日</param>
+	<param name="printState">印刷状態</param>
+	<remarks></remarks>
+</member><member name="M:diagnose.B5InputForm.B5InputForm_Load(System.Object,System.EventArgs)">
+	<summary>
+ loadイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.B5InputForm.initHistoryListBox">
+	<summary>
+ 履歴リスト初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:diagnose.B5InputForm.initDgvB5Input">
+	<summary>
+ データグリッドビュー初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:diagnose.B5InputForm.YmdBox_keyDownEnter(System.Object,System.EventArgs)">
+	<summary>
+ 健診日ボックスエンターキーイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="P:diagnose.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
 </summary>
@@ -69,6 +104,13 @@ diagnose
 	<param name="lpKeyName">書き込む対象のkey名</param>
 	<param name="lpValue">書き込む値</param>
 	<param name="lpFileName">iniファイルパス</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:diagnose.Util.calcAge(System.String,System.String)">
+	<summary>
+ 現在年齢算出
+ </summary>
+	<param name="birthYmd"></param>
 	<returns></returns>
 	<remarks></remarks>
 </member><member name="T:diagnose.受診者マスタ.dgvRowHeaderCell">
@@ -160,6 +202,34 @@ diagnose
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:diagnose.受診者マスタ.btnRegist_Click(System.Object,System.EventArgs)">
+	<summary>
+ 登録ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.受診者マスタ.btnDelete_Click(System.Object,System.EventArgs)">
+	<summary>
+ 削除ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.受診者マスタ.btnB5Paper_Click(System.Object,System.EventArgs)">
+	<summary>
+ B5診断書印刷ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.受診者マスタ.btnA4Paper_Click(System.Object,System.EventArgs)">
+	<summary>
+ A4診断書印刷ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:diagnose.topForm.topForm_Load(System.Object,System.EventArgs)">
 	<summary>
  loadイベント
@@ -240,6 +310,40 @@ diagnose
 </member><member name="M:diagnose.topForm.btnEnquete_Click(System.Object,System.EventArgs)">
 	<summary>
  アンケートシステムボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.beforePrintForm.#ctor(System.String,System.String,System.String,System.String,System.String,System.Int32,System.Boolean)">
+	<summary>
+ コンストラクタ
+ </summary>
+	<param name="ind">事業所名</param>
+	<param name="nam">氏名</param>
+	<param name="kana">カナ</param>
+	<param name="sex">性別（男：1、女：2）</param>
+	<param name="birth">生年月日(yyyy/MM/dd)</param>
+	<remarks></remarks>
+</member><member name="M:diagnose.beforePrintForm.printB5Paper">
+	<summary>
+ B5用紙印刷
+ </summary>
+	<remarks></remarks>
+</member><member name="M:diagnose.beforePrintForm.printA4Paper">
+	<summary>
+ A4用紙印刷
+ </summary>
+	<remarks></remarks>
+</member><member name="M:diagnose.beforePrintForm.btnExecute_Click(System.Object,System.EventArgs)">
+	<summary>
+ 実行ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:diagnose.beforePrintForm.btnCancel_Click(System.Object,System.EventArgs)">
+	<summary>
+ キャンセルボタンクリックイベント
  </summary>
 	<param name="sender"></param>
 	<param name="e"></param>

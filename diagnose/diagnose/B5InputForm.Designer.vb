@@ -180,14 +180,14 @@ Partial Class B5InputForm
         Me.dgvB5Input.Location = New System.Drawing.Point(102, 115)
         Me.dgvB5Input.Name = "dgvB5Input"
         Me.dgvB5Input.RowTemplate.Height = 21
-        Me.dgvB5Input.Size = New System.Drawing.Size(558, 578)
+        Me.dgvB5Input.Size = New System.Drawing.Size(558, 594)
         Me.dgvB5Input.TabIndex = 25
         '
         'B5InputForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(757, 705)
+        Me.ClientSize = New System.Drawing.Size(757, 728)
         Me.Controls.Add(Me.dgvB5Input)
         Me.Controls.Add(Me.historyListBox)
         Me.Controls.Add(Me.CheckAbnormal)

@@ -61,7 +61,7 @@ Public Class beforePrintForm
         objExcel.ScreenUpdating = False
 
         '受診日
-        oSheet.Range("F3").Value = "受診日：　　　　年　　　月　　　日 (　　　)"
+        oSheet.Range("I3").Value = "受診日：　　　　年　　　月　　　日 (　　　)"
         'カナ
         oSheet.Range("D4").Value = "　" & kana
         '氏名
@@ -74,6 +74,13 @@ Public Class beforePrintForm
         oSheet.Range("D8").Value = wareki.Split("/")(0) & "　年　" & wareki.Split("/")(1) & "　月　" & wareki.Split("/")(2) & "　日　" & age & "　歳　"
         '事業所名
         oSheet.Range("D9").Value = ind
+        '身長
+        oSheet.Range("D13").Value = "Cm"
+        oSheet.Range("E13").Value = ""
+        '体重
+        oSheet.Range("D14").Value = "Kg"
+        oSheet.Range("E14").Value = ""
+        oSheet.Range("F14").Value = ""
 
         objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
         objExcel.ScreenUpdating = True

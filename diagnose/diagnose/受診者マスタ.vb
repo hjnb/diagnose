@@ -787,7 +787,7 @@ Public Class 受診者マスタ
         If pf.ShowDialog() = Windows.Forms.DialogResult.OK Then
             '健診結果入力フォーム表示
             If IsNothing(a4InputForm) OrElse a4InputForm.IsDisposed Then
-                a4InputForm = New A4InputForm()
+                a4InputForm = New A4InputForm(ind, nam, kana, sex, birth, rbtnPrint.Checked)
                 a4InputForm.Show()
             End If
         End If

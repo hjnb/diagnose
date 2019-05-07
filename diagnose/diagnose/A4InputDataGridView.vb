@@ -6,6 +6,10 @@ Public Class A4InputDataGridView
     '文字数制限用
     Private Const LIMIT_LENGTH_BYTE As Integer = 60
 
+    Protected Overrides Function ProcessDialogKey(keyData As System.Windows.Forms.Keys) As Boolean
+        Return MyBase.ProcessDialogKey(keyData)
+    End Function
+
     Protected Overrides Function ProcessDataGridViewKey(e As System.Windows.Forms.KeyEventArgs) As Boolean
         Dim tb As DataGridViewTextBoxEditingControl = CType(Me.EditingControl, DataGridViewTextBoxEditingControl)
         If Not IsNothing(tb) AndAlso ((e.KeyCode = Keys.Left AndAlso tb.SelectionStart = 0) OrElse (e.KeyCode = Keys.Right AndAlso tb.SelectionStart = tb.TextLength)) Then
@@ -14,6 +18,24 @@ Public Class A4InputDataGridView
             Return MyBase.ProcessDataGridViewKey(e)
         End If
     End Function
+
+    Private Sub A4InputDataGridView_CellEndEdit(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Me.CellEndEdit
+        Dim currentCellRowIndex As Integer = Me.CurrentCell.RowIndex
+
+        '身長 or 体重を入力後、bmi算出
+        If (currentCellRowIndex = 0 OrElse currentCellRowIndex = 1) Then
+            Dim heightStr As String = Util.checkDBNullValue(Me("Result", 0).Value)
+            Dim weightStr As String = Util.checkDBNullValue(Me("Result", 1).Value)
+            If (heightStr <> "0" AndAlso weightStr <> "0") AndAlso System.Text.RegularExpressions.Regex.IsMatch(heightStr, "^\d+(\.\d+)?$") AndAlso System.Text.RegularExpressions.Regex.IsMatch(weightStr, "^\d+(\.\d+)?$") Then
+                Dim height As Double = heightStr
+                Dim weight As Double = weightStr
+                Dim bmi As Double = Math.Round(weight / ((height / 100) * (height / 100)), 1, MidpointRounding.AwayFromZero)
+                Me("Result", 3).Value = bmi.ToString("#.0")
+            Else
+                Me("Result", 3).Value = ""
+            End If
+        End If
+    End Sub
 
     Private Sub A4InputDataGridView_CellPainting(sender As Object, e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles Me.CellPainting
         If e.ColumnIndex >= 0 AndAlso e.RowIndex >= 0 Then

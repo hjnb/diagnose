@@ -1,4 +1,7 @@
-﻿Public Class A4InputForm
+﻿Imports System.Runtime.InteropServices
+Imports Microsoft.Office.Interop
+
+Public Class A4InputForm
     '事業所名
     Private ind As String
     '氏名
@@ -15,6 +18,8 @@
     Private item1CellStyle As DataGridViewCellStyle
     '2列目セルスタイル
     Private item2CellStyle As DataGridViewCellStyle
+    '尿蛋白、糖、潜血用
+    Private numberDic1 As New Dictionary(Of String, String) From {{"1", "(－)"}, {"2", "(±)"}, {"3", "(＋)"}, {"4", "(2＋)"}, {"5", "(3＋)"}}
 
     ''' <summary>
     ''' コンストラクタ
@@ -301,11 +306,51 @@
     End Sub
 
     ''' <summary>
+    ''' 健診データ表示
+    ''' </summary>
+    ''' <param name="ymd"></param>
+    ''' <remarks></remarks>
+    Private Sub displayKenData(ymd As String)
+        'クリア
+        clearInput()
+
+        'データ取得、表示
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim sql As String = "select * from Ken2 where Ind = '" & ind & "' and Kana = '" & kana & "' and Birth = '" & birth & "' and Ymd = '" & ymd & "'"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount > 0 Then
+            '年齢
+            Dim age As Integer = Util.calcAge(birth, Util.checkDBNullValue(rs.Fields("Ymd").Value))
+            ageBox.Text = age & " 歳"
+
+            '健診日
+            YmdBox.setADStr(Util.checkDBNullValue(rs.Fields("Ymd").Value))
+
+            '検査値
+            For i As Integer = 0 To 79
+                dgvA4Input("Result", i).Value = Util.checkDBNullValue(rs.Fields("D" & (i + 1)).Value)
+            Next
+        End If
+        rs.Close()
+        cn.Close()
+
+        'フォーカス
+        YmdBox.Focus()
+    End Sub
+
+    ''' <summary>
     ''' 入力内容
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub clearInput()
-
+        ageBox.Text = "   歳"
+        YmdBox.clearText()
+        For i As Integer = 0 To 79
+            dgvA4Input("Result", i).Value = ""
+        Next
+        YmdBox.Focus()
     End Sub
 
     ''' <summary>
@@ -315,7 +360,48 @@
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub btnRegist_Click(sender As System.Object, e As System.EventArgs) Handles btnRegist.Click
+        '健診日
+        Dim ymd As String = YmdBox.getADStr()
+        If ymd = "" Then
+            MsgBox("健診日を入力して下さい。", MsgBoxStyle.Exclamation)
+            YmdBox.Focus()
+            Return
+        End If
 
+        '入力データ取得
+        Dim d(79) As String
+        For i As Integer = 0 To 79
+            d(i) = Util.checkDBNullValue(dgvA4Input("Result", i).Value)
+        Next
+
+        '登録
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim sql As String = "select * from Ken2 where Ind = '" & ind & "' and Kana = '" & kana & "' and Birth = '" & birth & "' and Ymd = '" & ymd & "'"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            '新規登録
+            rs.AddNew()
+            rs.Fields("Ind").Value = ind
+            rs.Fields("Kana").Value = kana
+            rs.Fields("Birth").Value = birth
+            rs.Fields("Ymd").Value = ymd
+            For i As Integer = 0 To 79
+                rs.Fields("D" & (i + 1)).Value = d(i)
+            Next
+        Else
+            '更新登録
+            For i As Integer = 0 To 79
+                rs.Fields("D" & (i + 1)).Value = d(i)
+            Next
+        End If
+        rs.Update()
+        rs.Close()
+        cn.Close()
+
+        initHistoryListBox()
+        clearInput()
     End Sub
 
     ''' <summary>
@@ -325,7 +411,34 @@
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub btnDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnDelete.Click
+        '健診日
+        Dim ymd As String = YmdBox.getADStr()
 
+        '登録されているか確認
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim rs As New ADODB.Recordset()
+        Dim sql As String = "select * from Ken2 where Ind = '" & ind & "' and Kana = '" & kana & "' and Birth = '" & birth & "' and Ymd = '" & ymd & "'"
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            MsgBox("登録されていません。", MsgBoxStyle.Exclamation)
+            cn.Close()
+            Return
+        End If
+
+        '削除
+        Dim result As DialogResult = MessageBox.Show("削除してよろしいですか？", "削除", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If result = Windows.Forms.DialogResult.Yes Then
+            rs.Delete()
+            rs.Update()
+            cn.Close()
+        Else
+            cn.Close()
+            Return
+        End If
+
+        initHistoryListBox()
+        clearInput()
     End Sub
 
     ''' <summary>
@@ -335,7 +448,7 @@
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub btnClear_Click(sender As System.Object, e As System.EventArgs) Handles btnClear.Click
-
+        clearInput()
     End Sub
 
     ''' <summary>
@@ -345,6 +458,259 @@
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+        Dim ymd As String = YmdBox.getADStr()
+        If ymd = "" Then
+            MsgBox("データを選択して下さい。", MsgBoxStyle.Exclamation)
+            Return
+        End If
 
+        'データ取得
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim sql As String = "select * from Ken2 where Ind = '" & ind & "' and Kana = '" & kana & "' and Birth = '" & birth & "' and Ymd = '" & ymd & "'"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            MsgBox("健診データが存在しません。", MsgBoxStyle.Exclamation)
+            rs.Close()
+            cn.Close()
+            Return
+        End If
+
+        'エクセル準備
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(topForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("診断書２改")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '左半分
+        'ｶﾅ
+        oSheet.Range("H5").Value = kana
+        '氏名
+        oSheet.Range("H6").Value = nam
+        '性別
+        oSheet.Range("L8").Value = If(sex = 1, "①　男　・　2　女", "1　男　・　②　女")
+        '生年月日
+        Dim wareki As String = Util.convADStrToWarekiStr(birth)
+        Dim age As Integer = Util.calcAge(birth, Today.ToString("yyyy/MM/dd"))
+        oSheet.Range("H9").Value = wareki.Split("/")(0) & "　年　" & wareki.Split("/")(1) & "　月　" & wareki.Split("/")(2) & "　日"
+        oSheet.Range("O9").Value = age & "　歳"
+        '身長
+        oSheet.Range("I10").Value = Util.checkDBNullValue(rs.Fields("D1").Value)
+        '体重
+        oSheet.Range("N10").Value = Util.checkDBNullValue(rs.Fields("D2").Value)
+        '腹囲
+        oSheet.Range("I11").Value = Util.checkDBNullValue(rs.Fields("D3").Value)
+        'BMI
+        oSheet.Range("N11").Value = Util.checkDBNullValue(rs.Fields("D4").Value)
+        '胸部・腹部所見
+        oSheet.Range("H13").Value = Util.checkDBNullValue(rs.Fields("D7").Value)
+        '視力　右　裸眼
+        oSheet.Range("I15").Value = Util.checkDBNullValue(rs.Fields("D8").Value)
+        '      右　矯正
+        oSheet.Range("N15").Value = Util.checkDBNullValue(rs.Fields("D9").Value)
+        '視力　左　裸眼
+        oSheet.Range("I16").Value = Util.checkDBNullValue(rs.Fields("D10").Value)
+        '      左　矯正
+        oSheet.Range("N16").Value = Util.checkDBNullValue(rs.Fields("D11").Value)
+        '聴力　右　1000Hz
+        Dim d12Result As String = ""
+        Dim d12 As String = Util.checkDBNullValue(rs.Fields("D12").Value)
+        If d12 = "1" Then
+            d12Result = "所見　無"
+        ElseIf d12 = "2" Then
+            d12Result = "所見　有"
+        End If
+        oSheet.Range("I17").Value = d12Result
+        '      右　4000Hz
+        Dim d13Result As String = ""
+        Dim d13 As String = Util.checkDBNullValue(rs.Fields("D13").Value)
+        If d13 = "1" Then
+            d13Result = "無"
+        ElseIf d13 = "2" Then
+            d13Result = "有"
+        End If
+        oSheet.Range("O17").Value = d13Result
+        '      左　1000Hz
+        Dim d14Result As String = ""
+        Dim d14 As String = Util.checkDBNullValue(rs.Fields("D14").Value)
+        If d14 = "1" Then
+            d14Result = "所見　無"
+        ElseIf d14 = "2" Then
+            d14Result = "所見　有"
+        End If
+        oSheet.Range("I18").Value = d14Result
+        '      左　4000Hz
+        Dim d15Result As String = ""
+        Dim d15 As String = Util.checkDBNullValue(rs.Fields("D15").Value)
+        If d15 = "1" Then
+            d15Result = "無"
+        ElseIf d15 = "2" Then
+            d15Result = "有"
+        End If
+        oSheet.Range("O18").Value = d15Result
+        '最高血圧
+        oSheet.Range("I19").Value = Util.checkDBNullValue(rs.Fields("D16").Value)
+        '最低血圧
+        oSheet.Range("I20").Value = Util.checkDBNullValue(rs.Fields("D17").Value)
+        '総ｺﾚｽﾃﾛｰﾙ
+        oSheet.Range("I21").Value = Util.checkDBNullValue(rs.Fields("D19").Value)
+        '中性脂肪
+        oSheet.Range("I22").Value = Util.checkDBNullValue(rs.Fields("D20").Value)
+        'ＨＤＬ
+        oSheet.Range("I23").Value = Util.checkDBNullValue(rs.Fields("D21").Value)
+        'ＬＤＬ
+        oSheet.Range("I25").Value = Util.checkDBNullValue(rs.Fields("D22").Value)
+        'ＧＯＴ
+        oSheet.Range("I26").Value = Util.checkDBNullValue(rs.Fields("D23").Value)
+        'ＧＰＴ
+        oSheet.Range("I27").Value = Util.checkDBNullValue(rs.Fields("D24").Value)
+        'γＧＴＰ
+        oSheet.Range("I28").Value = Util.checkDBNullValue(rs.Fields("D25").Value)
+        'ＡＬＰ
+        oSheet.Range("I30").Value = Util.checkDBNullValue(rs.Fields("D26").Value)
+        '総蛋白
+        oSheet.Range("I31").Value = Util.checkDBNullValue(rs.Fields("D27").Value)
+        'ｱﾙﾌﾞﾐﾝ
+        oSheet.Range("I32").Value = Util.checkDBNullValue(rs.Fields("D28").Value)
+        '総ﾋﾞﾘﾙﾋﾞﾝ
+        oSheet.Range("I33").Value = Util.checkDBNullValue(rs.Fields("D29").Value)
+        'ＬＤＨ
+        oSheet.Range("I34").Value = Util.checkDBNullValue(rs.Fields("D30").Value)
+        'ｱﾐﾗｰｾﾞ
+        oSheet.Range("I35").Value = Util.checkDBNullValue(rs.Fields("D31").Value)
+        '尿酸
+        oSheet.Range("I36").Value = Util.checkDBNullValue(rs.Fields("D32").Value)
+        '血糖
+        oSheet.Range("I37").Value = Util.checkDBNullValue(rs.Fields("D33").Value)
+        'ﾍﾓｸﾞﾛﾋﾞﾝＡ１ｃ
+        oSheet.Range("I38").Value = Util.checkDBNullValue(rs.Fields("D34").Value)
+        '随時血糖
+        oSheet.Range("I39").Value = Util.checkDBNullValue(rs.Fields("D35").Value)
+        '尿糖
+        Dim d36 As String = Util.checkDBNullValue(rs.Fields("D36").Value)
+        Dim d36Result As String = ""
+        If numberDic1.ContainsKey(d36) Then
+            d36Result = numberDic1(d36)
+        End If
+        oSheet.Range("G40").Value = d36Result
+        '尿蛋白
+        Dim d37 As String = Util.checkDBNullValue(rs.Fields("D37").Value)
+        Dim d37Result As String = ""
+        If numberDic1.ContainsKey(d37) Then
+            d37Result = numberDic1(d37)
+        End If
+        oSheet.Range("G41").Value = d37Result
+        '尿潜血
+        Dim d38 As String = Util.checkDBNullValue(rs.Fields("D38").Value)
+        Dim d38Result As String = ""
+        If numberDic1.ContainsKey(d38) Then
+            d38Result = numberDic1(d38)
+        End If
+        oSheet.Range("G42").Value = d38Result
+        '血清ｸﾚｱﾁﾆﾝ
+        oSheet.Range("I43").Value = Util.checkDBNullValue(rs.Fields("D39").Value)
+        '尿沈査　赤血球
+        oSheet.Range("I45").Value = Util.checkDBNullValue(rs.Fields("D40").Value)
+        '　　　　白血球
+        oSheet.Range("N45").Value = Util.checkDBNullValue(rs.Fields("D41").Value)
+        '　　　　上皮細胞
+        oSheet.Range("I46").Value = Util.checkDBNullValue(rs.Fields("D42").Value)
+        '　　　　円柱
+        oSheet.Range("N46").Value = Util.checkDBNullValue(rs.Fields("D43").Value)
+        '白血球数
+        oSheet.Range("I47").Value = Util.checkDBNullValue(rs.Fields("D44").Value)
+        '赤血球数
+        oSheet.Range("I48").Value = Util.checkDBNullValue(rs.Fields("D45").Value)
+        '血色素量
+        oSheet.Range("I50").Value = Util.checkDBNullValue(rs.Fields("D46").Value)
+        'ヘマトクリット値
+        oSheet.Range("I52").Value = Util.checkDBNullValue(rs.Fields("D47").Value)
+        '血小板数
+        oSheet.Range("I54").Value = Util.checkDBNullValue(rs.Fields("D48").Value)
+        'Baso
+        oSheet.Range("I55").Value = Util.checkDBNullValue(rs.Fields("D49").Value)
+        'Eosino
+        oSheet.Range("N55").Value = Util.checkDBNullValue(rs.Fields("D50").Value)
+        'Stub
+        oSheet.Range("I56").Value = Util.checkDBNullValue(rs.Fields("D51").Value)
+        'Seg
+        oSheet.Range("N56").Value = Util.checkDBNullValue(rs.Fields("D52").Value)
+        'Lympho
+        oSheet.Range("I57").Value = Util.checkDBNullValue(rs.Fields("D53").Value)
+        'Mono
+        oSheet.Range("N57").Value = Util.checkDBNullValue(rs.Fields("D54").Value)
+
+        '右半分
+        '受診日
+        Dim yyyy As String = ymd.Split("/")(0)
+        Dim MM As String = ymd.Split("/")(1)
+        Dim dd As String = ymd.Split("/")(2)
+        Dim youbi As String = New DateTime(yyyy, CInt(MM), CInt(dd)).ToString("ddd")
+        Dim ymdFormatted As String = "受診日：　" & yyyy & "　年　" & MM & "　月　" & dd & "　日 (　" & youbi & "　)"
+        oSheet.Range("S3").Value = ymdFormatted
+        '現在所
+        oSheet.Range("W5").Value = ind
+        '既往歴・自覚症状
+        oSheet.Range("R10").Value = Util.checkDBNullValue(rs.Fields("D5").Value)
+        oSheet.Range("R11").Value = Util.checkDBNullValue(rs.Fields("D6").Value)
+        '採血時間（食後）
+        Dim d18 As String = Util.checkDBNullValue(rs.Fields("D18").Value)
+        Dim d18Result As String = ""
+        If d18 = "1" Then
+            d18Result = "① ： 10時間未満　2 ： 以上"
+        ElseIf d18 = "2" Then
+            d18Result = "1 ： 10時間未満　② ： 以上"
+        End If
+        oSheet.Range("U13").Value = d18Result
+        '
+        '
+        '
+        '
+
+
+
+
+
+
+
+
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        If printState = True Then
+            oSheet.PrintOut()
+        Else
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
+    End Sub
+
+    ''' <summary>
+    ''' 履歴リスト値変更イベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub historyListBox_SelectedValueChanged(sender As Object, e As System.EventArgs) Handles historyListBox.SelectedValueChanged
+        Dim selectedYmd As String = historyListBox.Text
+        If selectedYmd <> "" Then
+            displayKenData(selectedYmd)
+        End If
     End Sub
 End Class

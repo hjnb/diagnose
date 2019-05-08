@@ -76,11 +76,19 @@ Public Class beforePrintForm
         oSheet.Range("D9").Value = ind
         '身長
         oSheet.Range("D13").Value = "Cm"
+        oSheet.Range("D13").Font.Name = "ＭＳ Ｐ明朝"
         oSheet.Range("E13").Value = ""
         '体重
         oSheet.Range("D14").Value = "Kg"
+        oSheet.Range("D14").Font.Name = "ＭＳ Ｐ明朝"
         oSheet.Range("E14").Value = ""
         oSheet.Range("F14").Value = ""
+        '視力
+        oSheet.Range("F15").Value = "(　　　　　)"
+        oSheet.Range("F16").Value = "(　　　　　)"
+        '聴力障害
+        oSheet.Range("D17").Font.Name = "ＭＳ Ｐ明朝"
+        oSheet.Range("F17").Font.Name = "ＭＳ Ｐ明朝"
 
         objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
         objExcel.ScreenUpdating = True

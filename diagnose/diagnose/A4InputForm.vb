@@ -485,6 +485,9 @@ Public Class A4InputForm
         objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
         objExcel.ScreenUpdating = False
 
+        '所見等の部分の入力値有、無の場合のフォント名
+        Const FONT_NAME_INPUT As String = "ＭＳ Ｐゴシック"
+        Const FONT_NAME_NO_INPUT As String = "ＭＳ Ｐ明朝"
         '左半分
         'ｶﾅ
         oSheet.Range("H5").Value = kana
@@ -516,40 +519,44 @@ Public Class A4InputForm
         '      左　矯正
         oSheet.Range("N16").Value = Util.checkDBNullValue(rs.Fields("D11").Value)
         '聴力　右　1000Hz
-        Dim d12Result As String = ""
+        Dim d12Result As String = "所見　無 ・ 有"
         Dim d12 As String = Util.checkDBNullValue(rs.Fields("D12").Value)
         If d12 = "1" Then
             d12Result = "所見　無"
         ElseIf d12 = "2" Then
             d12Result = "所見　有"
         End If
+        oSheet.Range("I17").Font.Name = If(d12Result = "所見　無 ・ 有", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
         oSheet.Range("I17").Value = d12Result
         '      右　4000Hz
-        Dim d13Result As String = ""
+        Dim d13Result As String = "無 ・ 有"
         Dim d13 As String = Util.checkDBNullValue(rs.Fields("D13").Value)
         If d13 = "1" Then
             d13Result = "無"
         ElseIf d13 = "2" Then
             d13Result = "有"
         End If
+        oSheet.Range("O17").Font.Name = If(d13Result = "無 ・ 有", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
         oSheet.Range("O17").Value = d13Result
         '      左　1000Hz
-        Dim d14Result As String = ""
+        Dim d14Result As String = "所見　無 ・ 有"
         Dim d14 As String = Util.checkDBNullValue(rs.Fields("D14").Value)
         If d14 = "1" Then
             d14Result = "所見　無"
         ElseIf d14 = "2" Then
             d14Result = "所見　有"
         End If
+        oSheet.Range("I18").Font.Name = If(d14Result = "所見　無 ・ 有", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
         oSheet.Range("I18").Value = d14Result
         '      左　4000Hz
-        Dim d15Result As String = ""
+        Dim d15Result As String = "無 ・ 有"
         Dim d15 As String = Util.checkDBNullValue(rs.Fields("D15").Value)
         If d15 = "1" Then
             d15Result = "無"
         ElseIf d15 = "2" Then
             d15Result = "有"
         End If
+        oSheet.Range("O18").Font.Name = If(d15Result = "無 ・ 有", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
         oSheet.Range("O18").Value = d15Result
         '最高血圧
         oSheet.Range("I19").Value = Util.checkDBNullValue(rs.Fields("D16").Value)
@@ -591,23 +598,26 @@ Public Class A4InputForm
         oSheet.Range("I39").Value = Util.checkDBNullValue(rs.Fields("D35").Value)
         '尿糖
         Dim d36 As String = Util.checkDBNullValue(rs.Fields("D36").Value)
-        Dim d36Result As String = ""
+        Dim d36Result As String = "　－　　±　　１＋　　２＋　　３＋"
         If numberDic1.ContainsKey(d36) Then
             d36Result = numberDic1(d36)
+            oSheet.Range("G40").Font.Name = FONT_NAME_INPUT
         End If
         oSheet.Range("G40").Value = d36Result
         '尿蛋白
         Dim d37 As String = Util.checkDBNullValue(rs.Fields("D37").Value)
-        Dim d37Result As String = ""
+        Dim d37Result As String = "　－　　±　　１＋　　２＋　　３＋"
         If numberDic1.ContainsKey(d37) Then
             d37Result = numberDic1(d37)
+            oSheet.Range("G41").Font.Name = FONT_NAME_INPUT
         End If
         oSheet.Range("G41").Value = d37Result
         '尿潜血
         Dim d38 As String = Util.checkDBNullValue(rs.Fields("D38").Value)
-        Dim d38Result As String = ""
+        Dim d38Result As String = "　－　　±　　１＋　　２＋　　３＋"
         If numberDic1.ContainsKey(d38) Then
             d38Result = numberDic1(d38)
+            oSheet.Range("G42").Font.Name = FONT_NAME_INPUT
         End If
         oSheet.Range("G42").Value = d38Result
         '血清ｸﾚｱﾁﾆﾝ
@@ -644,6 +654,10 @@ Public Class A4InputForm
         oSheet.Range("N57").Value = Util.checkDBNullValue(rs.Fields("D54").Value)
 
         '右半分
+        Const NP_WORD As String = "異常なし"
+        Const DEFAULT_WORD As String = "1 ： 無　　2 ： 有"
+        Const NASHI As String = "① ： 無　　2 ： 有"
+        Const ARI As String = "1 ： 無　　② ： 有"
         '受診日
         Dim yyyy As String = ymd.Split("/")(0)
         Dim MM As String = ymd.Split("/")(1)
@@ -658,25 +672,175 @@ Public Class A4InputForm
         oSheet.Range("R11").Value = Util.checkDBNullValue(rs.Fields("D6").Value)
         '採血時間（食後）
         Dim d18 As String = Util.checkDBNullValue(rs.Fields("D18").Value)
-        Dim d18Result As String = ""
+        Dim d18Result As String = "1 ： 10時間未満　　2 ： 以上"
         If d18 = "1" Then
-            d18Result = "① ： 10時間未満　2 ： 以上"
+            d18Result = "① ： 10時間未満　　2 ： 以上"
         ElseIf d18 = "2" Then
-            d18Result = "1 ： 10時間未満　② ： 以上"
+            d18Result = "1 ： 10時間未満　　② ： 以上"
         End If
+        oSheet.Range("U13").Font.Name = If(d18Result = "1 ： 10時間未満　　2 ： 以上", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
         oSheet.Range("U13").Value = d18Result
-        '
-        '
-        '
-        '
-
-
-
-
-
-
-
-
+        'K.W.
+        oSheet.Range("Y14").Value = Util.checkDBNullValue(rs.Fields("D55").Value)
+        'Scheie
+        oSheet.Range("Z15").Value = Util.checkDBNullValue(rs.Fields("D56").Value)
+        oSheet.Range("AB15").Value = Util.checkDBNullValue(rs.Fields("D57").Value)
+        '眼底所見
+        Dim d58 As String = Util.checkDBNullValue(rs.Fields("D58").Value)
+        Dim d58Result As String = DEFAULT_WORD
+        If d58 = NP_WORD Then
+            d58Result = NASHI
+        ElseIf d58 <> "" Then
+            d58Result = ARI
+        End If
+        oSheet.Range("T16").Font.Name = If(d58Result = DEFAULT_WORD, FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("T16").Value = d58Result
+        oSheet.Range("T17").Value = d58
+        '実施理由
+        oSheet.Range("T19").Value = Util.checkDBNullValue(rs.Fields("D59").Value)
+        '肺活量
+        oSheet.Range("Y20").Value = Util.checkDBNullValue(rs.Fields("D60").Value)
+        '一秒量
+        oSheet.Range("Y21").Value = Util.checkDBNullValue(rs.Fields("D61").Value)
+        '一秒率
+        oSheet.Range("Y22").Value = Util.checkDBNullValue(rs.Fields("D62").Value)
+        '胸部ｘ線
+        Dim d63 As String = Util.checkDBNullValue(rs.Fields("D63").Value)
+        Dim d64 As String = Util.checkDBNullValue(rs.Fields("D64").Value)
+        Dim d63Result As String = DEFAULT_WORD
+        If d63 = NP_WORD Then
+            d63Result = NASHI
+            oSheet.Range("X25").Value = d63
+            oSheet.Range("X26").Value = d64
+        ElseIf d63 <> "" Then
+            d63Result = ARI
+            oSheet.Range("X25").Value = d63
+            oSheet.Range("X26").Value = d64
+        End If
+        oSheet.Range("Y23").Font.Name = If(d63Result = DEFAULT_WORD, FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("Y23").Value = d63Result
+        '胃部ｘ線
+        Dim d65 As String = Util.checkDBNullValue(rs.Fields("D65").Value)
+        Dim d66 As String = Util.checkDBNullValue(rs.Fields("D66").Value)
+        Dim d65Result As String = DEFAULT_WORD
+        If d65 = NP_WORD Then
+            d65Result = NASHI
+            oSheet.Range("X32").Value = d65
+            oSheet.Range("X33").Value = d66
+        ElseIf d65 <> "" Then
+            d65Result = ARI
+            oSheet.Range("X32").Value = d65
+            oSheet.Range("X33").Value = d66
+        End If
+        oSheet.Range("Y30").Font.Name = If(d65Result = DEFAULT_WORD, FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("Y30").Value = d65Result
+        '内視鏡
+        Dim d67 As String = Util.checkDBNullValue(rs.Fields("D67").Value)
+        Dim d67Result As String = DEFAULT_WORD
+        If d67 = NP_WORD Then
+            d67Result = NASHI
+            oSheet.Range("X36").Value = d67
+        ElseIf d67 <> "" Then
+            d67Result = ARI
+            oSheet.Range("X36").Value = d67
+        End If
+        oSheet.Range("Y35").Font.Name = If(d67Result = DEFAULT_WORD, FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("Y35").Value = d67Result
+        '腹部超音波
+        Dim d68 As String = Util.checkDBNullValue(rs.Fields("D68").Value)
+        Dim d68Result As String = DEFAULT_WORD
+        If d68 = NP_WORD Then
+            d68Result = NASHI
+            oSheet.Range("X39").Value = d68
+        ElseIf d68 <> "" Then
+            d68Result = ARI
+            oSheet.Range("X39").Value = d68
+        End If
+        oSheet.Range("Y38").Font.Name = If(d68Result = DEFAULT_WORD, FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("Y38").Value = d68Result
+        '便潜血反応
+        Dim d69 As String = Util.checkDBNullValue(rs.Fields("D69").Value)
+        Dim d70 As String = Util.checkDBNullValue(rs.Fields("D70").Value)
+        Dim d69Result As String = "1日目　－　　＋"
+        Dim d70Result As String = "2日目　－　　＋"
+        If d69 = "1" Then
+            d69Result = "1日目　(－)"
+        ElseIf d69 = "2" Then
+            d69Result = "1日目　(＋)"
+        End If
+        If d70 = "1" Then
+            d70Result = "2日目　(－)"
+        ElseIf d70 = "2" Then
+            d70Result = "2日目　(＋)"
+        End If
+        oSheet.Range("W41").Font.Name = If(d69Result = "1日目　－　　＋", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("W41").Value = d69Result
+        oSheet.Range("AA41").Font.Name = If(d70Result = "2日目　－　　＋", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("AA41").Value = d70Result
+        '直腸診
+        Dim d71 As String = Util.checkDBNullValue(rs.Fields("D71").Value)
+        Dim d71Result As String = DEFAULT_WORD
+        If d71 = NP_WORD Then
+            d71Result = NASHI
+            oSheet.Range("X43").Value = d71
+        ElseIf d71 <> "" Then
+            d71Result = ARI
+            oSheet.Range("X43").Value = d71
+        End If
+        oSheet.Range("Y42").Font.Name = If(d71Result = DEFAULT_WORD, FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("Y42").Value = d71Result
+        'HBs抗原
+        Dim d72 As String = Util.checkDBNullValue(rs.Fields("D72").Value)
+        Dim d72Result As String = "　－　　±　　＋"
+        If d72 = "1" Then
+            d72Result = "　(－)"
+        ElseIf d72 = "2" Then
+            d72Result = "　(±)"
+        ElseIf d72 = "3" Then
+            d72Result = "　(＋)"
+        End If
+        oSheet.Range("W45").Font.Name = If(d72Result = "　－　　±　　＋", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("W45").Value = d72Result
+        'HCV抗体
+        Dim d73 As String = Util.checkDBNullValue(rs.Fields("D73").Value)
+        Dim d73Result As String = "　感染なし　　あり　　要再検"
+        If d73 = "1" Then
+            d73Result = "　感染なし"
+        ElseIf d73 = "2" Then
+            d73Result = "　感染あり"
+        ElseIf d73 = "3" Then
+            d73Result = "　要検査"
+        End If
+        oSheet.Range("W46").Font.Name = If(d73Result = "　感染なし　　あり　　要再検", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("W46").Value = d73Result
+        'HCV核酸増幅
+        Dim d74 As String = Util.checkDBNullValue(rs.Fields("D74").Value)
+        Dim d74Result As String = "　感染なし　　あり"
+        If d74 = "1" Then
+            d74Result = "　感染なし"
+        ElseIf d74 = "2" Then
+            d74Result = "　感染あり"
+        End If
+        oSheet.Range("W47").Font.Name = If(d74Result = "　感染なし　　あり", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("W47").Value = d74Result
+        '心電図
+        Dim d75 As String = Util.checkDBNullValue(rs.Fields("D75").Value)
+        Dim d75Result As String = DEFAULT_WORD
+        If d75 = NP_WORD Then
+            d75Result = NASHI
+            oSheet.Range("X49").Value = d75
+        ElseIf d75 <> "" Then
+            d75Result = ARI
+            oSheet.Range("X49").Value = d75
+        End If
+        oSheet.Range("Y48").Font.Name = If(d75Result = DEFAULT_WORD, FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
+        oSheet.Range("Y48").Value = d75Result
+        '判定
+        oSheet.Range("S52").Value = Util.checkDBNullValue(rs.Fields("D76").Value)
+        oSheet.Range("S53").Value = Util.checkDBNullValue(rs.Fields("D77").Value)
+        oSheet.Range("S54").Value = Util.checkDBNullValue(rs.Fields("D78").Value)
+        oSheet.Range("S55").Value = Util.checkDBNullValue(rs.Fields("D79").Value)
+        oSheet.Range("S56").Value = Util.checkDBNullValue(rs.Fields("D80").Value)
 
         objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
         objExcel.ScreenUpdating = True

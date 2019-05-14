@@ -497,8 +497,13 @@ Public Class B5InputForm
         Dim yyyy As String = ymd.Split("/")(0)
         Dim MM As String = ymd.Split("/")(1)
         Dim dd As String = ymd.Split("/")(2)
-        Dim youbi As String = New DateTime(yyyy, CInt(MM), CInt(dd)).ToString("ddd")
-        Dim ymdFormatted As String = "受診日：　" & yyyy & "　年　" & MM & "　月　" & dd & "　日 (　" & youbi & "　)"
+        Dim youbi As String = New DateTime(yyyy, CInt(MM), CInt(dd)).ToString("ddd") '曜日
+        '西暦ver
+        'Dim ymdFormatted As String = "受診日：　" & yyyy & "　年　" & MM & "　月　" & dd & "　日 (　" & youbi & "　)"
+        '和暦ver
+        Dim wareki As String = YmdBox.getWarekiStr()
+        Dim kanji As String = Util.getKanji(wareki)
+        Dim ymdFormatted As String = "受診日：" & kanji & "　" & wareki.Substring(1, 2) & "　年　" & wareki.Substring(4, 2) & "　月　" & wareki.Substring(7, 2) & "　日 (　" & youbi & "　)"
 
         'データ貼り付け用配列
         Dim dataArrayLeft(42, 3) As String '左半分用
@@ -513,23 +518,32 @@ Public Class B5InputForm
         Dim sexFormatted As String = If(sex = 1, "① 男 ・ 2 女　", "1 男 ・ ② 女　")
         dataArrayLeft(3, 0) = sexFormatted
         '生年月日
-        Dim wareki As String = Util.convADStrToWarekiStr(birth)
+        Dim warekiBirth As String = Util.convADStrToWarekiStr(birth)
         Dim age As Integer = Util.calcAge(birth, ymd)
-        Dim birthFormatted As String = " " & wareki.Split("/")(0) & "　年　" & wareki.Split("/")(1) & "　月　" & wareki.Split("/")(2) & "　日　" & age & "　歳　"
+        Dim birthFormatted As String = " " & warekiBirth.Split("/")(0) & "　年　" & warekiBirth.Split("/")(1) & "　月　" & warekiBirth.Split("/")(2) & "　日　" & age & "　歳　"
         dataArrayLeft(4, 0) = birthFormatted
         '事業所名
         dataArrayLeft(5, 0) = ind
         '身長
-        Dim height As Double = rs.Fields("D1").Value
-        dataArrayLeft(9, 0) = height.ToString(".0")
-        dataArrayLeft(9, 1) = "Cm"
+        Dim height As Double = 0
+        If System.Text.RegularExpressions.Regex.IsMatch(Util.checkDBNullValue(rs.Fields("D1").Value), "^\d+(\.\d+)?$") Then
+            height = rs.Fields("D1").Value
+            dataArrayLeft(9, 0) = height.ToString(".0")
+            dataArrayLeft(9, 1) = "Cm"
+        End If
         '体重
-        Dim weight As Double = rs.Fields("D2").Value
-        Dim bmi As Double = Math.Round(weight / ((height / 100) * (height / 100)), 1, MidpointRounding.AwayFromZero)
-        dataArrayLeft(10, 0) = weight.ToString(".0")
-        dataArrayLeft(10, 1) = "Kg"
-        dataArrayLeft(10, 2) = "(BMI)"
-        dataArrayLeft(10, 3) = bmi.ToString(".0")
+        Dim weight As Double = 0
+        If System.Text.RegularExpressions.Regex.IsMatch(Util.checkDBNullValue(rs.Fields("D2").Value), "^\d+(\.\d+)?$") Then
+            weight = rs.Fields("D2").Value
+            dataArrayLeft(10, 0) = weight.ToString(".0")
+            dataArrayLeft(10, 1) = "Kg"
+        End If
+        'BMI
+        If height <> 0 AndAlso weight <> 0 Then
+            Dim bmi As Double = Math.Round(weight / ((height / 100) * (height / 100)), 1, MidpointRounding.AwayFromZero)
+            dataArrayLeft(10, 2) = "(BMI)"
+            dataArrayLeft(10, 3) = bmi.ToString(".0")
+        End If
         '視力　右
         dataArrayLeft(11, 0) = Util.checkDBNullValue(rs.Fields("D5").Value) '裸眼
         Dim kyoseiRight As String = If(Util.checkDBNullValue(rs.Fields("D6").Value) = "", "　　", Util.checkDBNullValue(rs.Fields("D6").Value))

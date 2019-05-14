@@ -663,7 +663,13 @@ Public Class A4InputForm
         Dim MM As String = ymd.Split("/")(1)
         Dim dd As String = ymd.Split("/")(2)
         Dim youbi As String = New DateTime(yyyy, CInt(MM), CInt(dd)).ToString("ddd")
-        Dim ymdFormatted As String = "受診日：　" & yyyy & "　年　" & MM & "　月　" & dd & "　日 (　" & youbi & "　)"
+        '西暦ver
+        'Dim ymdFormatted As String = "受診日：　" & yyyy & "　年　" & MM & "　月　" & dd & "　日 (　" & youbi & "　)"
+        '和暦ver
+        Dim warekiStr As String = YmdBox.getWarekiStr()
+        Dim kanji As String = Util.getKanji(warekiStr)
+        Dim ymdFormatted As String = "受診日：" & kanji & "　" & warekiStr.Substring(1, 2) & "　年　" & warekiStr.Substring(4, 2) & "　月　" & warekiStr.Substring(7, 2) & "　日 (　" & youbi & "　)"
+
         oSheet.Range("S3").Value = ymdFormatted
         '現在所
         oSheet.Range("W5").Value = ind

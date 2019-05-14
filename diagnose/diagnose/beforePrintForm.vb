@@ -61,7 +61,7 @@ Public Class beforePrintForm
         objExcel.ScreenUpdating = False
 
         '受診日
-        oSheet.Range("I3").Value = "受診日：　　　　年　　　月　　　日 (　　　)"
+        oSheet.Range("I3").Value = "受診日：令和　　　年　　　月　　　日 (　　　　　)"
         'カナ
         oSheet.Range("D4").Value = "　" & kana
         '氏名
@@ -127,7 +127,7 @@ Public Class beforePrintForm
         objExcel.ScreenUpdating = False
 
         '受診日
-        oSheet.Range("S3").Value = "受診日：　　　　　年　　　　月　　　　日 (　　　　　　)"
+        oSheet.Range("S3").Value = "受診日：令和　　　　年　　　　月　　　　日 (　　　　　　)"
         'カナ
         oSheet.Range("H5").Value = kana
         '氏名

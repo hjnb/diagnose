@@ -1,5 +1,6 @@
 ﻿Imports System.Runtime.InteropServices
 Imports Microsoft.Office.Interop
+Imports System.Data.OleDb
 
 Public Class A4InputForm
     '事業所名
@@ -20,6 +21,10 @@ Public Class A4InputForm
     Private item2CellStyle As DataGridViewCellStyle
     '尿蛋白、糖、潜血用
     Private numberDic1 As New Dictionary(Of String, String) From {{"1", "(－)"}, {"2", "(±)"}, {"3", "(＋)"}, {"4", "(2＋)"}, {"5", "(3＋)"}}
+    '診断書印刷の基準値範囲外の記号
+    Private HASHMARK As String = " #"
+    '男女で基準値が異なる項目名
+    Private stdValName() As String = {"Ｆｅ", "ＨＤＬ－ｺﾚｽﾃﾛｰﾙ", "γ－ＧＴＰ", "ｸﾚｱﾁﾆﾝ", "血清ｸﾚｱﾁﾆﾝ", "赤沈", "赤血球数", "血色素量", "ﾍﾏﾄｸﾘｯﾄ", "ﾍﾓｸﾞﾛﾋﾞﾝ"}
 
     ''' <summary>
     ''' コンストラクタ
@@ -477,6 +482,16 @@ Public Class A4InputForm
             Return
         End If
 
+        '基準値データ取得
+        Dim baseValDt As DataTable
+        Dim rsBase As New ADODB.Recordset
+        sql = "select Nam, Low1, Upp1, Low2, Upp2 from StdM"
+        rsBase.Open(sql, cn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+        Dim da As OleDbDataAdapter = New OleDbDataAdapter()
+        Dim ds As DataSet = New DataSet()
+        da.Fill(ds, rsBase, "StdM")
+        baseValDt = ds.Tables("StdM")
+
         'エクセル準備
         Dim objExcel As Excel.Application = CreateObject("Excel.Application")
         Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
@@ -559,41 +574,41 @@ Public Class A4InputForm
         oSheet.Range("O18").Font.Name = If(d15Result = "無 ・ 有", FONT_NAME_NO_INPUT, FONT_NAME_INPUT)
         oSheet.Range("O18").Value = d15Result
         '最高血圧
-        oSheet.Range("I19").Value = Util.checkDBNullValue(rs.Fields("D16").Value)
+        oSheet.Range("I19").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D16").Value), "最高血圧", baseValDt)
         '最低血圧
-        oSheet.Range("I20").Value = Util.checkDBNullValue(rs.Fields("D17").Value)
+        oSheet.Range("I20").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D17").Value), "最低血圧", baseValDt)
         '総ｺﾚｽﾃﾛｰﾙ
-        oSheet.Range("I21").Value = Util.checkDBNullValue(rs.Fields("D19").Value)
+        oSheet.Range("I21").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D19").Value), "総ｺﾚｽﾃﾛｰﾙ", baseValDt)
         '中性脂肪
-        oSheet.Range("I22").Value = Util.checkDBNullValue(rs.Fields("D20").Value)
+        oSheet.Range("I22").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D20").Value), "中性脂肪", baseValDt)
         'ＨＤＬ
-        oSheet.Range("I23").Value = Util.checkDBNullValue(rs.Fields("D21").Value)
+        oSheet.Range("I23").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D21").Value), "ＨＤＬ－ｺﾚｽﾃﾛｰﾙ", baseValDt)
         'ＬＤＬ
-        oSheet.Range("I25").Value = Util.checkDBNullValue(rs.Fields("D22").Value)
+        oSheet.Range("I25").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D22").Value), "ＬＤＬ－ｺﾚｽﾃﾛｰﾙ", baseValDt)
         'ＧＯＴ
-        oSheet.Range("I26").Value = Util.checkDBNullValue(rs.Fields("D23").Value)
+        oSheet.Range("I26").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D23").Value), "ＧＯＴ", baseValDt)
         'ＧＰＴ
-        oSheet.Range("I27").Value = Util.checkDBNullValue(rs.Fields("D24").Value)
+        oSheet.Range("I27").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D24").Value), "ＧＰＴ", baseValDt)
         'γＧＴＰ
-        oSheet.Range("I28").Value = Util.checkDBNullValue(rs.Fields("D25").Value)
+        oSheet.Range("I28").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D25").Value), "γ－ＧＴＰ", baseValDt)
         'ＡＬＰ
-        oSheet.Range("I30").Value = Util.checkDBNullValue(rs.Fields("D26").Value)
+        oSheet.Range("I30").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D26").Value), "ＡＬＰ", baseValDt)
         '総蛋白
-        oSheet.Range("I31").Value = Util.checkDBNullValue(rs.Fields("D27").Value)
+        oSheet.Range("I31").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D27").Value), "総蛋白", baseValDt)
         'ｱﾙﾌﾞﾐﾝ
-        oSheet.Range("I32").Value = Util.checkDBNullValue(rs.Fields("D28").Value)
+        oSheet.Range("I32").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D28").Value), "ｱﾙﾌﾞﾐﾝ", baseValDt)
         '総ﾋﾞﾘﾙﾋﾞﾝ
-        oSheet.Range("I33").Value = Util.checkDBNullValue(rs.Fields("D29").Value)
+        oSheet.Range("I33").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D29").Value), "総ﾋﾞﾘﾙﾋﾞﾝ", baseValDt)
         'ＬＤＨ
-        oSheet.Range("I34").Value = Util.checkDBNullValue(rs.Fields("D30").Value)
+        oSheet.Range("I34").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D30").Value), "ＬＤＨ", baseValDt)
         'ｱﾐﾗｰｾﾞ
-        oSheet.Range("I35").Value = Util.checkDBNullValue(rs.Fields("D31").Value)
+        oSheet.Range("I35").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D31").Value), "ｱﾐﾗｰｾﾞ", baseValDt)
         '尿酸
-        oSheet.Range("I36").Value = Util.checkDBNullValue(rs.Fields("D32").Value)
+        oSheet.Range("I36").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D32").Value), "尿酸", baseValDt)
         '血糖
-        oSheet.Range("I37").Value = Util.checkDBNullValue(rs.Fields("D33").Value)
+        oSheet.Range("I37").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D33").Value), "血糖", baseValDt)
         'ﾍﾓｸﾞﾛﾋﾞﾝＡ１ｃ
-        oSheet.Range("I38").Value = Util.checkDBNullValue(rs.Fields("D34").Value)
+        oSheet.Range("I38").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D34").Value), "ﾍﾓｸﾞﾛﾋﾞﾝＡ１ｃ", baseValDt)
         '随時血糖
         oSheet.Range("I39").Value = Util.checkDBNullValue(rs.Fields("D35").Value)
         '尿糖
@@ -621,7 +636,7 @@ Public Class A4InputForm
         End If
         oSheet.Range("G42").Value = d38Result
         '血清ｸﾚｱﾁﾆﾝ
-        oSheet.Range("I43").Value = Util.checkDBNullValue(rs.Fields("D39").Value)
+        oSheet.Range("I43").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D39").Value), "血清ｸﾚｱﾁﾆﾝ", baseValDt)
         '尿沈査　赤血球
         oSheet.Range("I45").Value = Util.checkDBNullValue(rs.Fields("D40").Value)
         '　　　　白血球
@@ -631,15 +646,15 @@ Public Class A4InputForm
         '　　　　円柱
         oSheet.Range("N46").Value = Util.checkDBNullValue(rs.Fields("D43").Value)
         '白血球数
-        oSheet.Range("I47").Value = Util.checkDBNullValue(rs.Fields("D44").Value)
+        oSheet.Range("I47").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D44").Value), "白血球数", baseValDt)
         '赤血球数
-        oSheet.Range("I48").Value = Util.checkDBNullValue(rs.Fields("D45").Value)
+        oSheet.Range("I48").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D45").Value), "赤血球数", baseValDt)
         '血色素量
-        oSheet.Range("I50").Value = Util.checkDBNullValue(rs.Fields("D46").Value)
+        oSheet.Range("I50").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D46").Value), "血色素量", baseValDt)
         'ヘマトクリット値
-        oSheet.Range("I52").Value = Util.checkDBNullValue(rs.Fields("D47").Value)
+        oSheet.Range("I52").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D47").Value), "ﾍﾏﾄｸﾘｯﾄ", baseValDt)
         '血小板数
-        oSheet.Range("I54").Value = Util.checkDBNullValue(rs.Fields("D48").Value)
+        oSheet.Range("I54").Value = checkBaseValue(Util.checkDBNullValue(rs.Fields("D48").Value), "血小板数", baseValDt)
         'Baso
         oSheet.Range("I55").Value = Util.checkDBNullValue(rs.Fields("D49").Value)
         'Eosino
@@ -870,6 +885,39 @@ Public Class A4InputForm
         objWorkBook = Nothing
         objExcel = Nothing
     End Sub
+
+    ''' <summary>
+    ''' 検査値が基準値範囲外かチェック
+    ''' </summary>
+    ''' <param name="resultValue">検査結果値</param>
+    ''' <param name="itemName">検査項目名</param>
+    ''' <param name="baseDt">基準値データテーブル</param>
+    ''' <returns>範囲外の場合は#記号を付けて返す</returns>
+    ''' <remarks></remarks>
+    Private Function checkBaseValue(resultValue As String, itemName As String, baseDt As DataTable) As String
+        If Not System.Text.RegularExpressions.Regex.IsMatch(resultValue, "^\d+(\.\d+)?$") Then
+            Return resultValue
+        Else
+            '基準値の取得
+            Dim low As Double
+            Dim upp As Double
+            If sex = "2" AndAlso Array.IndexOf(stdValName, itemName) >= 0 Then
+                '女性用の基準値
+                low = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Low2")
+                upp = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Upp2")
+            Else
+                low = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Low1")
+                upp = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Upp1")
+            End If
+
+            '基準値範囲外の場合は"#"記号を付ける
+            If Not (low <= resultValue AndAlso resultValue <= upp) Then
+                Return resultValue & HASHMARK
+            Else
+                Return resultValue
+            End If
+        End If
+    End Function
 
     ''' <summary>
     ''' 履歴リスト値変更イベント

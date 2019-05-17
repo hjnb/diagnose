@@ -492,6 +492,11 @@ Public Class A4InputForm
         da.Fill(ds, rsBase, "StdM")
         baseValDt = ds.Tables("StdM")
 
+        '異常値のチェック有無で付与文字変更
+        If CheckAbnormal.Checked = False Then
+            HASHMARK = ""
+        End If
+
         'エクセル準備
         Dim objExcel As Excel.Application = CreateObject("Excel.Application")
         Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks

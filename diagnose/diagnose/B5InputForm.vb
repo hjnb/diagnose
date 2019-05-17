@@ -508,6 +508,11 @@ Public Class B5InputForm
         da.Fill(ds, rsBase, "StdM")
         baseValDt = ds.Tables("StdM")
 
+        '異常値のチェック有無で付与文字変更
+        If CheckAbnormal.Checked = False Then
+            HASHMARK = ""
+        End If
+
         '受診日
         Dim yyyy As String = ymd.Split("/")(0)
         Dim MM As String = ymd.Split("/")(1)

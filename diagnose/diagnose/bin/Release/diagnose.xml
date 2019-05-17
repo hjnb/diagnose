@@ -85,6 +85,15 @@ diagnose
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:diagnose.B5InputForm.checkBaseValue(System.String,System.String,System.Data.DataTable)">
+	<summary>
+ 検査値が基準値範囲外かチェック
+ </summary>
+	<param name="resultValue">検査結果値</param>
+	<param name="itemName">検査項目名</param>
+	<param name="baseDt">基準値データテーブル</param>
+	<returns>範囲外の場合は#記号を付けて返す</returns>
+	<remarks></remarks>
 </member><member name="M:diagnose.B5InputForm.historyListBox_SelectedValueChanged(System.Object,System.EventArgs)">
 	<summary>
  履歴リスト値変更イベント

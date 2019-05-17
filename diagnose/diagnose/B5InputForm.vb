@@ -1,5 +1,6 @@
 ﻿Imports Microsoft.Office.Interop
 Imports System.Runtime.InteropServices
+Imports System.Data.OleDb
 
 Public Class B5InputForm
 
@@ -23,6 +24,10 @@ Public Class B5InputForm
     Private numberDic1 As New Dictionary(Of String, String) From {{"1", "－"}, {"2", "±"}, {"3", "＋"}, {"4", "2＋"}, {"5", "3＋"}}
     'ｳﾛﾋﾞﾘﾉｰｹﾞﾝ用
     Private numberDic2 As New Dictionary(Of String, String) From {{"2", "±"}, {"3", "＋"}, {"4", "2＋"}, {"5", "3＋"}}
+    '診断書印刷の基準値範囲外の記号
+    Private HASHMARK As String = " #"
+    '男女で基準値が異なる項目名
+    Private stdValName() As String = {"Ｆｅ", "ＨＤＬ－ｺﾚｽﾃﾛｰﾙ", "γ－ＧＴＰ", "ｸﾚｱﾁﾆﾝ", "血清ｸﾚｱﾁﾆﾝ", "赤沈", "赤血球数", "血色素量", "ﾍﾏﾄｸﾘｯﾄ", "ﾍﾓｸﾞﾛﾋﾞﾝ"}
 
     ''' <summary>
     ''' コンストラクタ
@@ -493,6 +498,16 @@ Public Class B5InputForm
             Return
         End If
 
+        '基準値データ取得
+        Dim baseValDt As DataTable
+        Dim rsBase As New ADODB.Recordset
+        sql = "select Nam, Low1, Upp1, Low2, Upp2 from StdM"
+        rsBase.Open(sql, cn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+        Dim da As OleDbDataAdapter = New OleDbDataAdapter()
+        Dim ds As DataSet = New DataSet()
+        da.Fill(ds, rsBase, "StdM")
+        baseValDt = ds.Tables("StdM")
+
         '受診日
         Dim yyyy As String = ymd.Split("/")(0)
         Dim MM As String = ymd.Split("/")(1)
@@ -631,14 +646,15 @@ Public Class B5InputForm
         dataArrayLeft(42, 0) = "　" & Util.checkDBNullValue(rs.Fields("D74").Value) '3行目
 
         '右半分(血液検査結果部分)
+        Dim itemNameArray() As String = {"白血球数", "赤血球数", "ﾍﾓｸﾞﾛﾋﾞﾝ", "ﾍﾏﾄｸﾘｯﾄ", "総ｺﾚｽﾃﾛｰﾙ", "ＨＤＬ－ｺﾚｽﾃﾛｰﾙ", "中性脂肪", "ＧＯＴ", "ＧＰＴ", "γ－ＧＴＰ", "ＡＬＰ", "赤沈", "ＣＲＰ", "尿酸", "尿素窒素", "ｸﾚｱﾁﾆﾝ", "総蛋白", "Ａ／Ｇ", "ＺＴＴ", "血糖", "ﾍﾓｸﾞﾛﾋﾞﾝＡ１ｃ", "Ｆｅ", "", ""}
         For i As Integer = 30 To 53
-            dataArrayRight(i - 30, 0) = Util.checkDBNullValue(rs.Fields("D" & i).Value)
+            dataArrayRight(i - 30, 0) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D" & i).Value), itemNameArray(i - 30), baseValDt)
         Next
         '右半分（上記以外）
         '血圧
         Dim bloodPressure As String
-        Dim ketuH As String = Util.checkDBNullValue(rs.Fields("D3").Value)
-        Dim ketuR As String = Util.checkDBNullValue(rs.Fields("D4").Value)
+        Dim ketuH As String = checkBaseValue(Util.checkDBNullValue(rs.Fields("D3").Value), "最高血圧", baseValDt)
+        Dim ketuR As String = checkBaseValue(Util.checkDBNullValue(rs.Fields("D4").Value), "最低血圧", baseValDt)
         bloodPressure = ketuH & "　/　" & ketuR & "　mmhg"
         '尿検査
         Dim tanpaku As String = Util.checkDBNullValue(rs.Fields("D21").Value)
@@ -710,6 +726,39 @@ Public Class B5InputForm
         objWorkBook = Nothing
         objExcel = Nothing
     End Sub
+
+    ''' <summary>
+    ''' 検査値が基準値範囲外かチェック
+    ''' </summary>
+    ''' <param name="resultValue">検査結果値</param>
+    ''' <param name="itemName">検査項目名</param>
+    ''' <param name="baseDt">基準値データテーブル</param>
+    ''' <returns>範囲外の場合は#記号を付けて返す</returns>
+    ''' <remarks></remarks>
+    Private Function checkBaseValue(resultValue As String, itemName As String, baseDt As DataTable) As String
+        If Not System.Text.RegularExpressions.Regex.IsMatch(resultValue, "^\d+(\.\d+)?$") Then
+            Return resultValue
+        Else
+            '基準値の取得
+            Dim low As Double
+            Dim upp As Double
+            If sex = "2" AndAlso Array.IndexOf(stdValName, itemName) >= 0 Then
+                '女性用の基準値
+                low = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Low2")
+                upp = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Upp2")
+            Else
+                low = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Low1")
+                upp = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Upp1")
+            End If
+
+            '基準値範囲外の場合は"#"記号を付ける
+            If Not (low <= resultValue AndAlso resultValue <= upp) Then
+                Return resultValue & HASHMARK
+            Else
+                Return resultValue
+            End If
+        End If
+    End Function
 
     ''' <summary>
     ''' 履歴リスト値変更イベント

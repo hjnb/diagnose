@@ -99,6 +99,12 @@
     <Compile Include="B5InputForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="B5基本項目一括印刷.Designer.vb">
+      <DependentUpon>B5基本項目一括印刷.vb</DependentUpon>
+    </Compile>
+    <Compile Include="B5基本項目一括印刷.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="beforePrintForm.Designer.vb">
       <DependentUpon>beforePrintForm.vb</DependentUpon>
     </Compile>
@@ -195,6 +201,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="B5InputForm.resx">
       <DependentUpon>B5InputForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="B5基本項目一括印刷.resx">
+      <DependentUpon>B5基本項目一括印刷.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="beforePrintForm.resx">
       <DependentUpon>beforePrintForm.vb</DependentUpon>

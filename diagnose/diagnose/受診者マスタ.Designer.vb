@@ -52,6 +52,7 @@ Partial Class 受診者マスタ
         Me.rbtnPrint = New System.Windows.Forms.RadioButton()
         Me.dgvMaster = New System.Windows.Forms.DataGridView()
         Me.RadioButton1 = New System.Windows.Forms.RadioButton()
+        Me.btnBasicPaperPrint = New System.Windows.Forms.Button()
         CType(Me.dgvMaster, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -230,10 +231,10 @@ Partial Class 受診者マスタ
         '
         Me.birthBox.boxType = 1
         Me.birthBox.DateText = ""
-        Me.birthBox.EraLabelText = "H31"
+        Me.birthBox.EraLabelText = "R01"
         Me.birthBox.EraText = ""
         Me.birthBox.Location = New System.Drawing.Point(439, 96)
-        Me.birthBox.MonthLabelText = "04"
+        Me.birthBox.MonthLabelText = "05"
         Me.birthBox.MonthText = ""
         Me.birthBox.Name = "birthBox"
         Me.birthBox.Size = New System.Drawing.Size(112, 30)
@@ -353,11 +354,21 @@ Partial Class 受診者マスタ
         Me.RadioButton1.Text = "印刷"
         Me.RadioButton1.UseVisualStyleBackColor = True
         '
+        'btnBasicPaperPrint
+        '
+        Me.btnBasicPaperPrint.Location = New System.Drawing.Point(887, 273)
+        Me.btnBasicPaperPrint.Name = "btnBasicPaperPrint"
+        Me.btnBasicPaperPrint.Size = New System.Drawing.Size(130, 36)
+        Me.btnBasicPaperPrint.TabIndex = 118
+        Me.btnBasicPaperPrint.Text = "B5基本項目一括印刷"
+        Me.btnBasicPaperPrint.UseVisualStyleBackColor = True
+        '
         '受診者マスタ
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(965, 687)
+        Me.ClientSize = New System.Drawing.Size(1029, 687)
+        Me.Controls.Add(Me.btnBasicPaperPrint)
         Me.Controls.Add(Me.dgvMaster)
         Me.Controls.Add(Me.rbtnPrint)
         Me.Controls.Add(Me.rbtnPreview)
@@ -424,4 +435,5 @@ Partial Class 受診者マスタ
     Friend WithEvents rbtnPrint As System.Windows.Forms.RadioButton
     Friend WithEvents dgvMaster As System.Windows.Forms.DataGridView
     Friend WithEvents RadioButton1 As System.Windows.Forms.RadioButton
+    Friend WithEvents btnBasicPaperPrint As System.Windows.Forms.Button
 End Class

@@ -6,6 +6,8 @@ Public Class 受診者マスタ
     Private b5InputForm As B5InputForm
     'A4健診結果入力フォーム
     Private a4InputForm As A4InputForm
+    'B5基本項目一括印刷フォーム
+    Private b5BasicPaperPrintForm As B5基本項目一括印刷
 
     ''' <summary>
     ''' 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
@@ -790,6 +792,24 @@ Public Class 受診者マスタ
                 a4InputForm = New A4InputForm(ind, nam, kana, sex, birth, rbtnPrint.Checked)
                 a4InputForm.Show()
             End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' B5基本項目一括印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnBasicPaperPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnBasicPaperPrint.Click
+        If IsNothing(b5BasicPaperPrintForm) OrElse b5BasicPaperPrintForm.IsDisposed Then
+            Dim ind As String = indBox.Text
+            If ind = "" Then
+                MsgBox("事業所名を選択して下さい。", MsgBoxStyle.Exclamation)
+                Return
+            End If
+            b5BasicPaperPrintForm = New B5基本項目一括印刷(ind, rbtnPrint.Checked)
+            b5BasicPaperPrintForm.Show()
         End If
     End Sub
 End Class

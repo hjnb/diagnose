@@ -207,6 +207,7 @@ Partial Class B5基本項目一括印刷
         '
         'circleTypeBox
         '
+        Me.circleTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.circleTypeBox.FormattingEnabled = True
         Me.circleTypeBox.Location = New System.Drawing.Point(277, 53)
         Me.circleTypeBox.Name = "circleTypeBox"

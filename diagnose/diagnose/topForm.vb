@@ -10,7 +10,10 @@
     Public iniFilePath As String = My.Application.Info.DirectoryPath & "\Diagnose.ini"
 
     '画像パス
-    Public imageFilePath As String = My.Application.Info.DirectoryPath & "\Diagnose.wmf"
+    Public topImageFilePath As String = My.Application.Info.DirectoryPath & "\Diagnose.wmf"
+    Public diag1Path As String = My.Application.Info.DirectoryPath & "\Diag1.png"
+    Public diag2aPath As String = My.Application.Info.DirectoryPath & "\Diag2a.png"
+    Public diag2bPath As String = My.Application.Info.DirectoryPath & "\Diag2b.png"
 
     'Health3のデータベースパス
     Public dbHealth3FilePath As String = Util.getIniString("System", "HealthDir", iniFilePath) & "\Health3.mdb"
@@ -57,8 +60,26 @@
             Exit Sub
         End If
 
-        If Not System.IO.File.Exists(imageFilePath) Then
-            MsgBox("画像ファイルが存在しません。ファイルを配置して下さい。")
+        If Not System.IO.File.Exists(topImageFilePath) Then
+            MsgBox("トップ画像ファイルが存在しません。ファイルを配置して下さい。")
+            Me.Close()
+            Exit Sub
+        End If
+
+        If Not System.IO.File.Exists(diag1Path) Then
+            MsgBox("B5胸部画像ファイルが存在しません。ファイルを配置して下さい。")
+            Me.Close()
+            Exit Sub
+        End If
+
+        If Not System.IO.File.Exists(diag2aPath) Then
+            MsgBox("A4胸部画像ファイルが存在しません。ファイルを配置して下さい。")
+            Me.Close()
+            Exit Sub
+        End If
+
+        If Not System.IO.File.Exists(diag2bPath) Then
+            MsgBox("A4胃部画像ファイルが存在しません。ファイルを配置して下さい。")
             Me.Close()
             Exit Sub
         End If
@@ -69,7 +90,7 @@
         Me.MaximizeBox = False
 
         '画像の配置処理
-        topPicture.ImageLocation = imageFilePath
+        topPicture.ImageLocation = topImageFilePath
     End Sub
 
     ''' <summary>

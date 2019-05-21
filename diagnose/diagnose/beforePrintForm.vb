@@ -75,13 +75,11 @@ Public Class beforePrintForm
         '事業所名
         oSheet.Range("D9").Value = ind
         '身長
-        oSheet.Range("D13").Value = "Cm"
-        oSheet.Range("D13").Font.Name = "ＭＳ Ｐ明朝"
-        oSheet.Range("E13").Value = ""
+        oSheet.Range("E13").Value = "　　　Cm"
+        oSheet.Range("E13").Font.Name = "ＭＳ Ｐ明朝"
         '体重
-        oSheet.Range("D14").Value = "Kg"
-        oSheet.Range("D14").Font.Name = "ＭＳ Ｐ明朝"
-        oSheet.Range("E14").Value = ""
+        oSheet.Range("E14").Value = "　　　Kg"
+        oSheet.Range("E14").Font.Name = "ＭＳ Ｐ明朝"
         oSheet.Range("F14").Value = ""
         '視力
         oSheet.Range("F15").Value = "(　　　　　)"
@@ -89,6 +87,13 @@ Public Class beforePrintForm
         '聴力障害
         oSheet.Range("D17").Font.Name = "ＭＳ Ｐ明朝"
         oSheet.Range("F17").Font.Name = "ＭＳ Ｐ明朝"
+        '胸部画像
+        Dim xlShapes As Excel.Shapes = DirectCast(oSheet.Shapes, Excel.Shapes)
+        Dim imagePath As String = topForm.diag1Path
+        If System.IO.File.Exists(imagePath) Then
+            Dim cell As Excel.Range = DirectCast(oSheet.Cells(12, "I"), Excel.Range)
+            xlShapes.AddPicture(imagePath, False, True, cell.Left, cell.Top, 70, 60)
+        End If
 
         objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
         objExcel.ScreenUpdating = True

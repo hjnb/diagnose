@@ -52,7 +52,8 @@ Partial Class 受診者マスタ
         Me.rbtnPrint = New System.Windows.Forms.RadioButton()
         Me.dgvMaster = New System.Windows.Forms.DataGridView()
         Me.RadioButton1 = New System.Windows.Forms.RadioButton()
-        Me.btnBasicPaperPrint = New System.Windows.Forms.Button()
+        Me.btnB5BasicPaperPrint = New System.Windows.Forms.Button()
+        Me.btnA4BasicPaperPrint = New System.Windows.Forms.Button()
         CType(Me.dgvMaster, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -354,21 +355,31 @@ Partial Class 受診者マスタ
         Me.RadioButton1.Text = "印刷"
         Me.RadioButton1.UseVisualStyleBackColor = True
         '
-        'btnBasicPaperPrint
+        'btnB5BasicPaperPrint
         '
-        Me.btnBasicPaperPrint.Location = New System.Drawing.Point(887, 273)
-        Me.btnBasicPaperPrint.Name = "btnBasicPaperPrint"
-        Me.btnBasicPaperPrint.Size = New System.Drawing.Size(130, 36)
-        Me.btnBasicPaperPrint.TabIndex = 118
-        Me.btnBasicPaperPrint.Text = "B5基本項目一括印刷"
-        Me.btnBasicPaperPrint.UseVisualStyleBackColor = True
+        Me.btnB5BasicPaperPrint.Location = New System.Drawing.Point(887, 273)
+        Me.btnB5BasicPaperPrint.Name = "btnB5BasicPaperPrint"
+        Me.btnB5BasicPaperPrint.Size = New System.Drawing.Size(130, 36)
+        Me.btnB5BasicPaperPrint.TabIndex = 118
+        Me.btnB5BasicPaperPrint.Text = "B5 基本項目一括印刷"
+        Me.btnB5BasicPaperPrint.UseVisualStyleBackColor = True
+        '
+        'btnA4BasicPaperPrint
+        '
+        Me.btnA4BasicPaperPrint.Location = New System.Drawing.Point(887, 328)
+        Me.btnA4BasicPaperPrint.Name = "btnA4BasicPaperPrint"
+        Me.btnA4BasicPaperPrint.Size = New System.Drawing.Size(130, 36)
+        Me.btnA4BasicPaperPrint.TabIndex = 119
+        Me.btnA4BasicPaperPrint.Text = "A4 基本項目一括印刷"
+        Me.btnA4BasicPaperPrint.UseVisualStyleBackColor = True
         '
         '受診者マスタ
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1029, 687)
-        Me.Controls.Add(Me.btnBasicPaperPrint)
+        Me.Controls.Add(Me.btnA4BasicPaperPrint)
+        Me.Controls.Add(Me.btnB5BasicPaperPrint)
         Me.Controls.Add(Me.dgvMaster)
         Me.Controls.Add(Me.rbtnPrint)
         Me.Controls.Add(Me.rbtnPreview)
@@ -435,5 +446,6 @@ Partial Class 受診者マスタ
     Friend WithEvents rbtnPrint As System.Windows.Forms.RadioButton
     Friend WithEvents dgvMaster As System.Windows.Forms.DataGridView
     Friend WithEvents RadioButton1 As System.Windows.Forms.RadioButton
-    Friend WithEvents btnBasicPaperPrint As System.Windows.Forms.Button
+    Friend WithEvents btnB5BasicPaperPrint As System.Windows.Forms.Button
+    Friend WithEvents btnA4BasicPaperPrint As System.Windows.Forms.Button
 End Class

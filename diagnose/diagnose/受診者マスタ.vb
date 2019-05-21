@@ -8,6 +8,8 @@ Public Class 受診者マスタ
     Private a4InputForm As A4InputForm
     'B5基本項目一括印刷フォーム
     Private b5BasicPaperPrintForm As B5基本項目一括印刷
+    'A4基本項目一括印刷フォーム
+    Private a4BasicPaperPrintForm As A4基本項目一括印刷
 
     ''' <summary>
     ''' 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
@@ -801,7 +803,7 @@ Public Class 受診者マスタ
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     ''' <remarks></remarks>
-    Private Sub btnBasicPaperPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnBasicPaperPrint.Click
+    Private Sub btnBasicPaperPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnB5BasicPaperPrint.Click
         If IsNothing(b5BasicPaperPrintForm) OrElse b5BasicPaperPrintForm.IsDisposed Then
             Dim ind As String = indBox.Text
             If ind = "" Then
@@ -810,6 +812,24 @@ Public Class 受診者マスタ
             End If
             b5BasicPaperPrintForm = New B5基本項目一括印刷(ind, rbtnPrint.Checked)
             b5BasicPaperPrintForm.Show()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' A4基本項目一括印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnA4BasicPaperPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnA4BasicPaperPrint.Click
+        If IsNothing(a4BasicPaperPrintForm) OrElse a4BasicPaperPrintForm.IsDisposed Then
+            Dim ind As String = indBox.Text
+            If ind = "" Then
+                MsgBox("事業所名を選択して下さい。", MsgBoxStyle.Exclamation)
+                Return
+            End If
+            a4BasicPaperPrintForm = New A4基本項目一括印刷(ind, rbtnPrint.Checked)
+            a4BasicPaperPrintForm.Show()
         End If
     End Sub
 End Class

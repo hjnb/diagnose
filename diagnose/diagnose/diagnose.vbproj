@@ -87,6 +87,12 @@
     <Compile Include="A4InputForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="A4基本項目一括印刷.Designer.vb">
+      <DependentUpon>A4基本項目一括印刷.vb</DependentUpon>
+    </Compile>
+    <Compile Include="A4基本項目一括印刷.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="B5InputDataGridView.Designer.vb">
       <DependentUpon>B5InputDataGridView.vb</DependentUpon>
     </Compile>
@@ -198,6 +204,9 @@
   <ItemGroup>
     <EmbeddedResource Include="A4InputForm.resx">
       <DependentUpon>A4InputForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="A4基本項目一括印刷.resx">
+      <DependentUpon>A4基本項目一括印刷.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="B5InputForm.resx">
       <DependentUpon>B5InputForm.vb</DependentUpon>

@@ -46,6 +46,7 @@ Partial Class A4基本項目一括印刷
         Me.bloodTypeBox.Name = "bloodTypeBox"
         Me.bloodTypeBox.Size = New System.Drawing.Size(121, 20)
         Me.bloodTypeBox.TabIndex = 41
+        Me.bloodTypeBox.Visible = False
         '
         'Label9
         '
@@ -55,6 +56,7 @@ Partial Class A4基本項目一括印刷
         Me.Label9.Size = New System.Drawing.Size(53, 12)
         Me.Label9.TabIndex = 40
         Me.Label9.Text = "採血種類"
+        Me.Label9.Visible = False
         '
         'circleTypeBox
         '
@@ -64,6 +66,7 @@ Partial Class A4基本項目一括印刷
         Me.circleTypeBox.Name = "circleTypeBox"
         Me.circleTypeBox.Size = New System.Drawing.Size(121, 20)
         Me.circleTypeBox.TabIndex = 39
+        Me.circleTypeBox.Visible = False
         '
         'Label8
         '
@@ -73,6 +76,7 @@ Partial Class A4基本項目一括印刷
         Me.Label8.Size = New System.Drawing.Size(87, 12)
         Me.Label8.TabIndex = 38
         Me.Label8.Text = "健診項目の○印"
+        Me.Label8.Visible = False
         '
         'Label7
         '

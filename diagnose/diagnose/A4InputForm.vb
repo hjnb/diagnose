@@ -502,8 +502,16 @@ Public Class A4InputForm
         Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
         Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(topForm.excelFilePass)
         Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("診断書２改")
+        Dim xlShapes As Excel.Shapes = DirectCast(oSheet.Shapes, Excel.Shapes)
         objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
         objExcel.ScreenUpdating = False
+
+        Dim image2aPath As String = topForm.diag2aPath '胸部画像
+        Dim image2bPath As String = topForm.diag2bPath '胃部画像
+        Dim cell As Excel.Range = DirectCast(oSheet.Cells(24, "S"), Excel.Range)
+        xlShapes.AddPicture(image2aPath, False, True, cell.Left, cell.Top, 70, 60)
+        cell = DirectCast(oSheet.Cells(31, "S"), Excel.Range)
+        xlShapes.AddPicture(image2bPath, False, True, cell.Left, cell.Top, 60, 50)
 
         '所見等の部分の入力値有、無の場合のフォント名
         Const FONT_NAME_INPUT As String = "ＭＳ Ｐゴシック"

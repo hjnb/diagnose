@@ -4,10 +4,10 @@ Imports System.Runtime.InteropServices
 
 Public Class B5基本項目一括印刷
     '健診項目○印用
-    Private circleTypeArray() As String = {"全項目(8640円)", "職員"}
+    Private circleTypeArray() As String = {"全項目(8640円)", "職員", "職員（肝炎有り）"}
 
     '採血種類
-    Private bloodTypeArray() As String = {"ケンシン１", "ケンシン１ + 肝炎", "ケンシン２"}
+    Private bloodTypeArray() As String = {"ケンシン１", "ケンシン１ + 肝炎", "ケンシン２", "キムラグミ", "メデック"}
 
     'その他の検査項目用文字列
     Private itemArray() As String = {"ＢＭＩ　　　→", "腹囲　　　→", "LDL_CHO", "腰椎ＸＰ", "白内障歴　　 →", "被爆歴　　　　→", "皮膚の異常　→"}
@@ -313,7 +313,7 @@ Public Class B5基本項目一括印刷
             '血液
             cell = DirectCast(oSheet.Cells(22, "H"), Excel.Range)
             xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 5, cell.Top, 17, 17).Fill.Transparency = 1
-        ElseIf circleTypeBox.SelectedIndex = 1 Then '職員
+        ElseIf circleTypeBox.SelectedIndex = 1 OrElse circleTypeBox.SelectedIndex = 2 Then '職員
             '身長
             Dim cell As Excel.Range = DirectCast(oSheet.Cells(13, "B"), Excel.Range)
             xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 15, cell.Top, 17, 17).Fill.Transparency = 1
@@ -353,6 +353,16 @@ Public Class B5基本項目一括印刷
             '血液
             cell = DirectCast(oSheet.Cells(22, "H"), Excel.Range)
             xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 5, cell.Top, 17, 17).Fill.Transparency = 1
+        End If
+
+        If circleTypeBox.SelectedIndex = 2 Then
+            '肝炎
+            'HBs抗原
+            Dim cell As Excel.Range = DirectCast(oSheet.Cells(40, "D"), Excel.Range)
+            xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 15, cell.Top, 17, 17).Fill.Transparency = 1
+            'HCV抗体
+            cell = DirectCast(oSheet.Cells(42, "D"), Excel.Range)
+            xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 15, cell.Top, 17, 17).Fill.Transparency = 1
         End If
 
         '尿潜血枠

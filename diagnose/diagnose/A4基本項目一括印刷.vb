@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 
 Public Class A4基本項目一括印刷
     '健診項目○印用
-    Private circleTypeArray() As String = {"職員", "メデック"}
+    Private circleTypeArray() As String = {"メデック"}
 
     '採血種類
     Private bloodTypeArray() As String = {"メデック", "ケンシン１", "ケンシン１ + 肝炎", "ケンシン２"}
@@ -237,7 +237,6 @@ Public Class A4基本項目一括印刷
             MsgBox("印刷対象者がいません。対象者にチェックを付けて下さい。", MsgBoxStyle.Exclamation)
             Return
         End If
-
 
         'エクセル準備
         Dim objExcel As Excel.Application = CreateObject("Excel.Application")

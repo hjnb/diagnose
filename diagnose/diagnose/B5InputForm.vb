@@ -701,6 +701,13 @@ Public Class B5InputForm
 
         '受診日
         oSheet.Range("I3").Value = ymdFormatted
+        '胸部画像
+        Dim xlShapes As Excel.Shapes = DirectCast(oSheet.Shapes, Excel.Shapes)
+        Dim imagePath As String = topForm.diag1Path
+        If System.IO.File.Exists(imagePath) Then
+            Dim cell As Excel.Range = DirectCast(oSheet.Cells(12, "I"), Excel.Range)
+            xlShapes.AddPicture(imagePath, False, True, cell.Left, cell.Top, 70, 60)
+        End If
 
         'データ貼り付け
         oSheet.Range("D4", "G46").Value = dataArrayLeft

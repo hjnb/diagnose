@@ -1,4 +1,6 @@
 ﻿Imports System.Data.OleDb
+Imports Microsoft.Office.Interop
+Imports System.Runtime.InteropServices
 
 Public Class 受診者マスタ
 
@@ -831,5 +833,105 @@ Public Class 受診者マスタ
             a4BasicPaperPrintForm = New A4基本項目一括印刷(ind, rbtnPrint.Checked)
             a4BasicPaperPrintForm.Show()
         End If
+    End Sub
+
+    ''' <summary>
+    ''' 名簿ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnNameList_Click(sender As System.Object, e As System.EventArgs) Handles btnNameList.Click
+        '件数
+        Dim rowsCount As Integer = dgvMaster.Rows.Count
+
+        '貼り付けデータ作成
+        Dim dataList As New List(Of String(,))
+        Dim dataArray(53, 7) As String
+        Dim arrayRowIndex As Integer = 0
+        Dim pCount As Integer = 1
+        For i As Integer = 0 To rowsCount - 1
+            'チェック無の場合は次へ
+            If dgvMaster("List", i).Value = False Then
+                Continue For
+            End If
+
+            If arrayRowIndex = 54 Then
+                dataList.Add(dataArray.Clone())
+                Array.Clear(dataArray, 0, dataArray.Length)
+                arrayRowIndex = 0
+            End If
+
+            'No.
+            dataArray(arrayRowIndex, 0) = pCount
+            '氏名
+            dataArray(arrayRowIndex, 1) = Util.checkDBNullValue(dgvMaster("Nam", i).Value)
+            'ｶﾅ
+            dataArray(arrayRowIndex, 2) = Util.checkDBNullValue(dgvMaster("Kana", i).Value)
+            '性別
+            dataArray(arrayRowIndex, 3) = Util.checkDBNullValue(dgvMaster("Sex", i).Value)
+            '生年月日
+            dataArray(arrayRowIndex, 4) = Util.checkDBNullValue(dgvMaster("Birth", i).Value)
+            '年齢
+            dataArray(arrayRowIndex, 5) = Util.checkDBNullValue(dgvMaster("Age", i).Value)
+            '実施日
+            dataArray(arrayRowIndex, 6) = Util.checkDBNullValue(dgvMaster("LastDate", i).Value)
+            '判定
+            dataArray(arrayRowIndex, 7) = Util.checkDBNullValue(dgvMaster("Decision", i).Value)
+
+            arrayRowIndex += 1
+            pCount += 1
+        Next
+        dataList.Add(dataArray.Clone())
+
+        If pCount <= 1 Then
+            MsgBox("該当がありません。", MsgBoxStyle.Exclamation)
+            Return
+        End If
+
+        'エクセル
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(topForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("名簿")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '事業所名
+        oSheet.Range("I2").Value = indBox.Text
+
+        '必要枚数コピペ
+        For i As Integer = 0 To dataList.Count - 2
+            Dim xlPasteRange As Excel.Range = oSheet.Range("A" & (59 + (58 * i))) 'ペースト先
+            oSheet.Rows("1:58").copy(xlPasteRange)
+            oSheet.HPageBreaks.Add(oSheet.Range("A" & (59 + (58 * i)))) '改ページ
+        Next
+
+        'データ貼り付け
+        For i As Integer = 0 To dataList.Count - 1
+            oSheet.Range("B" & (4 + 58 * i), "I" & (57 + 58 * i)).Value = dataList(i)
+        Next
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        If rbtnPrint.Checked = True Then
+            oSheet.PrintOut()
+        ElseIf rbtnPreview.Checked = True Then
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
     End Sub
 End Class

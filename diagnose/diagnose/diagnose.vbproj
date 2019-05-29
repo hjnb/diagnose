@@ -229,6 +229,9 @@
     <EmbeddedResource Include="事業所マスタ.resx">
       <DependentUpon>事業所マスタ.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="事業所別実施履歴.resx">
+      <DependentUpon>事業所別実施履歴.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="受診者マスタ.resx">
       <DependentUpon>受診者マスタ.vb</DependentUpon>
     </EmbeddedResource>

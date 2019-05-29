@@ -55,6 +55,7 @@ Partial Class 事業所マスタ
         Me.rbtnPrint = New System.Windows.Forms.RadioButton()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.dgvMaster = New System.Windows.Forms.DataGridView()
+        Me.Label15 = New System.Windows.Forms.Label()
         CType(Me.dgvMaster, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -341,7 +342,7 @@ Partial Class 事業所マスタ
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(816, 208)
+        Me.Label13.Location = New System.Drawing.Point(822, 193)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(94, 12)
         Me.Label13.TabIndex = 28
@@ -389,11 +390,23 @@ Partial Class 事業所マスタ
         Me.dgvMaster.Size = New System.Drawing.Size(829, 348)
         Me.dgvMaster.TabIndex = 32
         '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Font = New System.Drawing.Font("MS UI Gothic", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.Label15.ForeColor = System.Drawing.Color.Blue
+        Me.Label15.Location = New System.Drawing.Point(822, 210)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(150, 11)
+        Me.Label15.TabIndex = 33
+        Me.Label15.Text = "プロパティで手差し設定して下さい"
+        '
         '事業所マスタ
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(952, 692)
+        Me.ClientSize = New System.Drawing.Size(974, 692)
+        Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.dgvMaster)
         Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.rbtnPrint)
@@ -467,4 +480,5 @@ Partial Class 事業所マスタ
     Friend WithEvents rbtnPrint As System.Windows.Forms.RadioButton
     Friend WithEvents Label14 As System.Windows.Forms.Label
     Friend WithEvents dgvMaster As System.Windows.Forms.DataGridView
+    Friend WithEvents Label15 As System.Windows.Forms.Label
 End Class

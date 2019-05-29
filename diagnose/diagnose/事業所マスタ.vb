@@ -1,4 +1,6 @@
 ﻿Imports System.Data.OleDb
+Imports Microsoft.Office.Interop
+Imports System.Runtime.InteropServices
 
 Public Class 事業所マスタ
 
@@ -328,6 +330,10 @@ Public Class 事業所マスタ
             tan1Box.Text = tan1
             tan2Box.Text = tan2
             commentBox.Text = comment
+
+            'フォーカス
+            indBox.Focus()
+            indBox.SelectionStart = indBox.TextLength
         End If
     End Sub
 
@@ -406,14 +412,76 @@ Public Class 事業所マスタ
         '最終日付
         Dim sYmd As String = sYmdBox.getADStr()
         '単価１
-        Dim tan1 As String = tan1Box.Text
-
+        Dim tan1 As String = If(tan1Box.Text = "", "0", tan1Box.Text)
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tan1, "^\d+$") Then
+            MsgBox("単価は数値を入力して下さい。", MsgBoxStyle.Exclamation)
+            tan1Box.Focus()
+            Return
+        End If
         '単価２
-        Dim tan2 As String = tan2Box.Text
+        Dim tan2 As String = If(tan2Box.Text = "", "0", tan2Box.Text)
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tan2, "^\d+$") Then
+            MsgBox("単価は数値を入力して下さい。", MsgBoxStyle.Exclamation)
+            tan2Box.Focus()
+            Return
+        End If
         'ｺﾒﾝﾄ
         Dim comment As String = commentBox.Text
 
+        '登録
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim sql As String = "select * from IndM where Ind = '" & ind & "'"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            '新規登録
+            rs.AddNew()
+            rs.Fields("Ind").Value = ind
+            rs.Fields("Kana").Value = kana
+            rs.Fields("Tel").Value = tel
+            rs.Fields("Fax").Value = fax
+            rs.Fields("Tanto").Value = tanto
+            rs.Fields("Post").Value = post
+            rs.Fields("Jyu").Value = jyu
+            rs.Fields("Cod").Value = cod
+            rs.Fields("SYmd").Value = sYmd
+            rs.Fields("Tan1").Value = tan1
+            rs.Fields("Tan2").Value = tan2
+            rs.Fields("Text").Value = comment
+            rs.Update()
+            rs.Close()
+            cn.Close()
 
+            '再表示
+            displayDgvMaster()
+        Else
+            '更新登録
+            Dim result As DialogResult = MessageBox.Show("変更してよろしいですか？", "変更", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = Windows.Forms.DialogResult.Yes Then
+                rs.Fields("Ind").Value = ind
+                rs.Fields("Kana").Value = kana
+                rs.Fields("Tel").Value = tel
+                rs.Fields("Fax").Value = fax
+                rs.Fields("Tanto").Value = tanto
+                rs.Fields("Post").Value = post
+                rs.Fields("Jyu").Value = jyu
+                rs.Fields("Cod").Value = cod
+                rs.Fields("SYmd").Value = sYmd
+                rs.Fields("Tan1").Value = tan1
+                rs.Fields("Tan2").Value = tan2
+                rs.Fields("Text").Value = comment
+                rs.Update()
+                rs.Close()
+                cn.Close()
+
+                '再表示
+                displayDgvMaster()
+            Else
+                rs.Close()
+                cn.Close()
+            End If
+        End If
     End Sub
 
     ''' <summary>
@@ -423,7 +491,40 @@ Public Class 事業所マスタ
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub btnDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnDelete.Click
-        
+        '事業所名
+        Dim ind As String = indBox.Text
+        If ind = "" Then
+            MsgBox("事業所名を入力して下さい。", MsgBoxStyle.Exclamation)
+            indBox.Focus()
+            Return
+        End If
+
+        '削除
+        Dim cn As New ADODB.Connection()
+        cn.Open(topForm.DB_Diagnose)
+        Dim sql As String = "select * from IndM where Ind = '" & ind & "'"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            MsgBox("登録されていません。", MsgBoxStyle.Exclamation)
+            rs.Close()
+            cn.Close()
+            Return
+        Else
+            Dim result As DialogResult = MessageBox.Show("削除してよろしいですか？", "削除", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = Windows.Forms.DialogResult.Yes Then
+                rs.Delete()
+                rs.Update()
+                rs.Close()
+                cn.Close()
+
+                '再表示
+                displayDgvMaster()
+            Else
+                rs.Close()
+                cn.Close()
+            End If
+        End If
     End Sub
 
     ''' <summary>
@@ -433,6 +534,154 @@ Public Class 事業所マスタ
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+        '件数
+        Dim rowsCount As Integer = dgvMaster.Rows.Count
 
+        '現在日付
+        Dim nowYmd As String = DateTime.Now.ToString("yyyy/MM/dd")
+
+        '貼り付けデータ作成
+        Dim dataList As New List(Of String(,))
+        Dim dataArray(35, 9) As String
+        Dim arrayRowIndex As Integer = 0
+        For i As Integer = 0 To rowsCount - 1
+            If arrayRowIndex = 36 Then
+                dataList.Add(dataArray.Clone())
+                Array.Clear(dataArray, 0, dataArray.Length)
+                arrayRowIndex = 0
+            End If
+
+            'No.
+            dataArray(arrayRowIndex, 0) = i + 1
+            '事業所名
+            dataArray(arrayRowIndex, 1) = Util.checkDBNullValue(dgvMaster("Ind", i).Value)
+            'ｶﾅ
+            dataArray(arrayRowIndex, 2) = Util.checkDBNullValue(dgvMaster("Kana", i).Value)
+            '登録数
+            dataArray(arrayRowIndex, 3) = Util.checkDBNullValue(dgvMaster("PCount", i).Value)
+            '最終日付
+            dataArray(arrayRowIndex, 4) = Util.checkDBNullValue(dgvMaster("SYmd", i).Value)
+            '関連
+            Dim kanren As String = Util.checkDBNullValue(dgvMaster("Text", i).Value)
+            dataArray(arrayRowIndex, 5) = If(kanren.IndexOf("関連") >= 0, kanren, "")
+            'TEL
+            dataArray(arrayRowIndex, 6) = Util.checkDBNullValue(dgvMaster("Tel", i).Value)
+            '担当者
+            dataArray(arrayRowIndex, 7) = Util.checkDBNullValue(dgvMaster("Tanto", i).Value)
+            '〒
+            dataArray(arrayRowIndex, 8) = Util.checkDBNullValue(dgvMaster("Post", i).Value)
+            '住所
+            dataArray(arrayRowIndex, 9) = Util.checkDBNullValue(dgvMaster("Jyu", i).Value)
+
+            arrayRowIndex += 1
+        Next
+        dataList.Add(dataArray.Clone())
+
+        'エクセル
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(topForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("事業所一覧改")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '日付
+        oSheet.Range("E2").Value = nowYmd
+
+        '必要枚数コピペ
+        For i As Integer = 0 To dataList.Count - 2
+            Dim xlPasteRange As Excel.Range = oSheet.Range("A" & (41 + (40 * i))) 'ペースト先
+            oSheet.Rows("1:40").copy(xlPasteRange)
+            oSheet.HPageBreaks.Add(oSheet.Range("A" & (41 + (40 * i)))) '改ページ
+        Next
+
+        'データ貼り付け
+        For i As Integer = 0 To dataList.Count - 1
+            oSheet.Range("K" & (2 + 40 * i)).Value = (i + 1) & " 頁"
+            oSheet.Range("B" & (4 + 40 * i), "K" & (39 + 40 * i)).Value = dataList(i)
+        Next
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        If rbtnPrint.Checked = True Then
+            oSheet.PrintOut()
+        ElseIf rbtnPreview.Checked = True Then
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
+    End Sub
+
+    ''' <summary>
+    ''' 封筒ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnEnvelope_Click(sender As System.Object, e As System.EventArgs) Handles btnEnvelope.Click
+        '事業所名
+        Dim ind As String = indBox.Text
+        If ind = "" Then
+            MsgBox("事業所名を入力して下さい。", MsgBoxStyle.Exclamation)
+            indBox.Focus()
+            Return
+        End If
+        '郵便番号
+        Dim post As String = postBox.Text
+        '住所
+        Dim jyu As String = jyuBox.Text.Replace(" ", "　")
+        Dim jyu1 As String = jyu.Split("　")(0)
+        Dim jyu2 As String = If(jyu.IndexOf("　") >= 0, jyu.Split("　")(1), "")
+
+        'エクセル
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(topForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("角形２号")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '郵便番号
+        oSheet.Range("Y6").Value = If(post = "", "", "〒" & post)
+        '住所１
+        oSheet.Range("K19").Value = jyu1
+        '住所２
+        oSheet.Range("K20").Value = jyu2
+        '事業所名
+        oSheet.Range("K22").Value = ind & "　様"
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        If rbtnPrint.Checked = True Then
+            oSheet.PrintOut()
+        ElseIf rbtnPreview.Checked = True Then
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
     End Sub
 End Class

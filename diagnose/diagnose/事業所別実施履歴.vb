@@ -126,6 +126,9 @@ Public Class 事業所別_実施履歴
         dt.Columns.Add("J3", GetType(String)) '実施日3
         dt.Columns.Add("J4", GetType(String)) '実施日4
         dt.Columns.Add("J5", GetType(String)) '実施日5
+        dt.Columns.Add("J6", GetType(String)) '実施日6
+        dt.Columns.Add("J7", GetType(String)) '実施日7
+        dt.Columns.Add("Continued", GetType(String)) '・・・
         For Each row As DataRow In dt.Rows
             row("Check") = False
         Next
@@ -138,9 +141,9 @@ Public Class 事業所別_実施履歴
 
             'サイズ
             If dgvList.Rows.Count <= 30 Then
-                .Size = New Size(752, 560)
+                .Size = New Size(752, 559)
             Else
-                .Size = New Size(769, 560)
+                .Size = New Size(769, 559)
             End If
 
             With .Columns("Check")
@@ -169,8 +172,9 @@ Public Class 事業所別_実施履歴
                 .Width = 45
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .ReadOnly = True
+                .Frozen = True
             End With
-            For i As Integer = 1 To 5
+            For i As Integer = 1 To 7
                 With .Columns("J" & i)
                     .HeaderText = i
                     .SortMode = DataGridViewColumnSortMode.NotSortable
@@ -179,6 +183,13 @@ Public Class 事業所別_実施履歴
                     .ReadOnly = True
                 End With
             Next
+            With .Columns("Continued")
+                .HeaderText = "・・・"
+                .SortMode = DataGridViewColumnSortMode.NotSortable
+                .Width = 35
+                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .ReadOnly = True
+            End With
         End With
     End Sub
 
@@ -283,6 +294,110 @@ Public Class 事業所別_実施履歴
         Dim ind As String = indList.Text
         indLabel.Text = ind
         displayDgvList(ind)
+    End Sub
+
+    ''' <summary>
+    ''' 印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+        '事業所名
+        Dim ind As String = indLabel.Text
+        If ind = "" Then
+            MsgBox("事業所を選択して下さい。", MsgBoxStyle.Exclamation)
+            Return
+        End If
+
+        '印刷データ作成
+        Dim dataList As New List(Of String(,))
+        Dim dataArray(38, 11) As String
+        Dim arrayRowIndex As Integer = 0
+        For i As Integer = 0 To dgvList.Rows.Count - 1
+            If arrayRowIndex = 39 Then
+                dataList.Add(dataArray.Clone())
+                Array.Clear(dataArray, 0, dataArray.Length)
+                arrayRowIndex = 0
+            End If
+
+            'No.
+            dataArray(arrayRowIndex, 0) = i + 1
+            '氏名
+            dataArray(arrayRowIndex, 1) = Util.checkDBNullValue(dgvList("Nam", i).Value)
+            '生年月日
+            dataArray(arrayRowIndex, 2) = Util.checkDBNullValue(dgvList("Birth", i).Value)
+            '年齢
+            dataArray(arrayRowIndex, 3) = Util.checkDBNullValue(dgvList("Age", i).Value)
+            '1
+            dataArray(arrayRowIndex, 4) = Util.checkDBNullValue(dgvList("J1", i).Value)
+            '2
+            dataArray(arrayRowIndex, 5) = Util.checkDBNullValue(dgvList("J2", i).Value)
+            '3
+            dataArray(arrayRowIndex, 6) = Util.checkDBNullValue(dgvList("J3", i).Value)
+            '4
+            dataArray(arrayRowIndex, 7) = Util.checkDBNullValue(dgvList("J4", i).Value)
+            '5
+            dataArray(arrayRowIndex, 8) = Util.checkDBNullValue(dgvList("J5", i).Value)
+            '6
+            dataArray(arrayRowIndex, 9) = Util.checkDBNullValue(dgvList("J6", i).Value)
+            '7
+            dataArray(arrayRowIndex, 10) = Util.checkDBNullValue(dgvList("J7", i).Value)
+            '・・・
+            dataArray(arrayRowIndex, 11) = Util.checkDBNullValue(dgvList("Continued", i).Value)
+
+            arrayRowIndex += 1
+        Next
+        dataList.Add(dataArray.Clone())
+
+        'エクセル
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(topForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("健診実施履歴")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '事業所名
+        oSheet.Range("E2").Value = ind
+        '日付
+        Dim nowYmd As String = DateTime.Now.ToString("yyyy/MM/dd")
+        oSheet.Range("L2").Value = nowYmd
+
+        '必要枚数コピペ
+        For i As Integer = 0 To dataList.Count - 2
+            Dim xlPasteRange As Excel.Range = oSheet.Range("A" & (45 + (44 * i))) 'ペースト先
+            oSheet.Rows("1:44").copy(xlPasteRange)
+            oSheet.HPageBreaks.Add(oSheet.Range("A" & (45 + (44 * i)))) '改ページ
+        Next
+
+        'データ貼り付け
+        For i As Integer = 0 To dataList.Count - 1
+            oSheet.Range("B" & (5 + 44 * i), "M" & (43 + 44 * i)).Value = dataList(i)
+        Next
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        If rbtnPrint.Checked = True Then
+            oSheet.PrintOut()
+        ElseIf rbtnPreview.Checked = True Then
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
+
     End Sub
 
     ''' <summary>

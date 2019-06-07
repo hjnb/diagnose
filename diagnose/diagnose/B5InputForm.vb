@@ -182,7 +182,7 @@ Public Class B5InputForm
         dt.Rows(6).Item("Item2") = "　　　  左　裸眼"
         dt.Rows(7).Item("Item2") = "　　　　　   矯正"
         dt.Rows(8).Item("Item2") = "聴力障害　　　1:なし　2:あり"
-        dt.Rows(9).Item("Item2") = "　　　　　　　    1:右　　2:左"
+        dt.Rows(9).Item("Item2") = "　　　　　　　    1:右　　2:左　　3:両耳"
         dt.Rows(10).Item("Item2") = "手足の運動障害"
         dt.Rows(11).Item("Item2") = "自覚症状"
         dt.Rows(12).Item("Item2") = "その他の特記事項"
@@ -586,6 +586,8 @@ Public Class B5InputForm
                 hearingResult2 = "(　右　)"
             ElseIf d10 = "2" Then
                 hearingResult2 = "(　左　)"
+            ElseIf d10 = "3" Then
+                hearingResult2 = "(　両耳　)"
             Else
                 hearingResult2 = "(　右　・　左　)"
             End If

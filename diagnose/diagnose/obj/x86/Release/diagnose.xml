@@ -228,6 +228,13 @@ diagnose
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:diagnose.事業所別_実施履歴.事業所別_実施履歴_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
+	<summary>
+ keyDownイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:diagnose.事業所別_実施履歴.initIndList">
 	<summary>
  事業所リスト初期設定

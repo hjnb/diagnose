@@ -35,9 +35,13 @@ Partial Class 事業所別_実施履歴
         Me.rbtnKaku2 = New System.Windows.Forms.RadioButton()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.nyPanel = New System.Windows.Forms.Panel()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.n3textBox = New System.Windows.Forms.TextBox()
         CType(Me.dgvList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
+        Me.nyPanel.SuspendLayout()
         Me.SuspendLayout()
         '
         'indList
@@ -171,11 +175,38 @@ Partial Class 事業所別_実施履歴
         Me.Panel2.Size = New System.Drawing.Size(235, 22)
         Me.Panel2.TabIndex = 12
         '
+        'nyPanel
+        '
+        Me.nyPanel.Controls.Add(Me.n3textBox)
+        Me.nyPanel.Controls.Add(Me.Label1)
+        Me.nyPanel.Location = New System.Drawing.Point(906, 12)
+        Me.nyPanel.Name = "nyPanel"
+        Me.nyPanel.Size = New System.Drawing.Size(154, 48)
+        Me.nyPanel.TabIndex = 13
+        Me.nyPanel.Visible = False
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(17, 8)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(100, 12)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "長3に入れる文字列"
+        '
+        'n3textBox
+        '
+        Me.n3textBox.Location = New System.Drawing.Point(19, 23)
+        Me.n3textBox.Name = "n3textBox"
+        Me.n3textBox.Size = New System.Drawing.Size(111, 19)
+        Me.n3textBox.TabIndex = 1
+        '
         '事業所別_実施履歴
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1025, 659)
+        Me.ClientSize = New System.Drawing.Size(1096, 659)
+        Me.Controls.Add(Me.nyPanel)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.btnEnvelope)
@@ -191,6 +222,8 @@ Partial Class 事業所別_実施履歴
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
+        Me.nyPanel.ResumeLayout(False)
+        Me.nyPanel.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -208,4 +241,7 @@ Partial Class 事業所別_実施履歴
     Friend WithEvents rbtnKaku2 As System.Windows.Forms.RadioButton
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
+    Friend WithEvents nyPanel As System.Windows.Forms.Panel
+    Friend WithEvents n3textBox As System.Windows.Forms.TextBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
 End Class

@@ -34,6 +34,7 @@ Public Class 事業所別_実施履歴
     ''' <remarks></remarks>
     Private Sub 事業所別_実施履歴_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.WindowState = FormWindowState.Maximized
+        Me.KeyPreview = True
 
         '印刷ラジオボタン初期値設定
         initPrintState()
@@ -43,6 +44,19 @@ Public Class 事業所別_実施履歴
 
         'データグリッドビュー初期設定
         initDgvList()
+    End Sub
+
+    ''' <summary>
+    ''' keyDownイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub 事業所別_実施履歴_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+        If e.Alt AndAlso e.KeyCode = Keys.F12 Then
+            '(Alt + F12)キー押下
+            nyPanel.Visible = Not nyPanel.Visible
+        End If
     End Sub
 
     ''' <summary>
@@ -453,8 +467,10 @@ Public Class 事業所別_実施履歴
         Next
 
         'データ書き込み
+        Dim titleStr As String = n3textBox.Text
         For i As Integer = 0 To namList.Count - 1
             oSheet.Range("E" & (11 + 43 * i)).Value = namList(i)
+            oSheet.Range("E" & (14 + 43 * i)).Value = titleStr
         Next
 
         objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic

@@ -635,6 +635,11 @@ diagnose
  データグリッドビュー初期設定
  </summary>
 	<remarks></remarks>
+</member><member name="M:diagnose.健診結果報告書.initDtBaseVal">
+	<summary>
+ 基準値データ設定
+ </summary>
+	<remarks></remarks>
 </member><member name="M:diagnose.健診結果報告書.dgvMaster_CellPainting(System.Object,System.Windows.Forms.DataGridViewCellPaintingEventArgs)">
 	<summary>
  CellPaintingイベント
@@ -649,6 +654,14 @@ diagnose
 	<param name="ind">事業所名</param>
 	<param name="fromYmd">from日付</param>
 	<param name="toYmd">to日付</param>
+	<remarks></remarks>
+</member><member name="M:diagnose.健診結果報告書.checkBaseValue(System.String,System.String,System.String)">
+	<summary>
+ 検査値が基準値範囲外かチェック
+ </summary>
+	<param name="resultValue">検査結果値</param>
+	<param name="itemName">検査項目名</param>
+	<returns>範囲内:true、範囲外:false</returns>
 	<remarks></remarks>
 </member><member name="M:diagnose.健診結果報告書.btnExecute_Click(System.Object,System.EventArgs)">
 	<summary>

@@ -754,8 +754,8 @@ Public Class B5InputForm
             Return resultValue
         Else
             '基準値の取得
-            Dim low As Double
-            Dim upp As Double
+            Dim low As Decimal
+            Dim upp As Decimal
             If sex = "2" AndAlso Array.IndexOf(stdValName, itemName) >= 0 Then
                 '女性用の基準値
                 low = baseDt.Select("Nam = '" & itemName & "'")(0).Item("Low2")

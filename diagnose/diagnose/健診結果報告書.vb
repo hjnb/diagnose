@@ -223,11 +223,12 @@ Public Class 健診結果報告書
     Private Sub displayDgvResult(ind As String, fromYmd As String, toYmd As String)
         '内容クリア
         For Each row As DataRow In dtResult.Rows
-            '実施者
-            row("JNum") = ""
-            '所見者数
-            row("SNum") = ""
+            row("JNum") = "" '実施者数
+            row("SNum") = "" '所見者数
         Next
+        totalLabel.Text = "" '受診者数
+        syokenLabel.Text = "" '所見者数
+        sijiLabel.Text = "" '医師指示数
 
         'データ取得
         Dim cnn As New ADODB.Connection
@@ -252,11 +253,17 @@ Public Class 健診結果報告書
         Dim bp As Integer = 0 '血圧
         Dim hinJNum As Integer = 0 '貧血実施者数
         Dim hin As Integer = 0 '貧血
+        Dim kankiJNum As Integer = 0 '肝機能実施者数
         Dim kanki As Integer = 0 '肝機能
+        Dim sisituJNum As Integer = 0 '血中脂質実施者数
         Dim sisitu As Integer = 0 '血中脂質
+        Dim ketoJNum As Integer = 0 '血糖実施者数
         Dim keto As Integer = 0 '血糖
+        Dim nyotoJNum As Integer = 0 '尿糖実施者数
         Dim nyoto As Integer = 0 '尿糖
+        Dim nyotanJNum As Integer = 0 '尿糖実施者数
         Dim nyotan As Integer = 0 '尿蛋白
+        Dim ecgJNum As Integer = 0 '心電図実施者数
         Dim ecg As Integer = 0 '心電図
         Dim jNum As Integer = 0 '受診者数
         Dim sNum As Integer = 0 '所見者数
@@ -264,6 +271,9 @@ Public Class 健診結果報告書
 
         'B5データの集計処理
         While Not rsKenD1.EOF
+            '所見有無判定用
+            Dim syokenFlg As Boolean = False
+
             '性別
             Dim sex As String = Util.checkDBNullValue(rsKenD1.Fields("Sex").Value)
 
@@ -275,6 +285,7 @@ Public Class 健診結果報告書
             If d9 = "2" Then
                 ear1000Hz += 1
                 ear4000Hz += 1
+                syokenFlg = True
             End If
             '胸部Ｘ線
             Dim d25 As String = Util.checkDBNullValue(rsKenD1.Fields("D25").Value)
@@ -285,6 +296,7 @@ Public Class 健診結果報告書
             End If
             If d25 <> "" AndAlso d25 <> NP_WORD Then
                 xp += 1
+                syokenFlg = True
             End If
             '血圧
             Dim d3 As String = Util.checkDBNullValue(rsKenD1.Fields("D3").Value)
@@ -296,6 +308,7 @@ Public Class 健診結果報告書
             End If
             If Not d3Result OrElse Not d4Result Then
                 bp += 1
+                syokenFlg = True
             End If
             '貧血
             Dim d32 As String = Util.checkDBNullValue(rsKenD1.Fields("D32").Value)
@@ -305,17 +318,84 @@ Public Class 健診結果報告書
             End If
             If Not d32Result Then
                 hin += 1
+                syokenFlg = True
             End If
             '肝機能
+            Dim d37 As String = Util.checkDBNullValue(rsKenD1.Fields("D37").Value)
+            Dim d38 As String = Util.checkDBNullValue(rsKenD1.Fields("D38").Value)
+            Dim d39 As String = Util.checkDBNullValue(rsKenD1.Fields("D39").Value)
+            Dim d37Result As Boolean = checkBaseValue(d37, "ＧＯＴ", sex)
+            Dim d38Result As Boolean = checkBaseValue(d38, "ＧＰＴ", sex)
+            Dim d39Result As Boolean = checkBaseValue(d39, "γ－ＧＴＰ", sex)
+            If d37 <> "" Then
+                kankiJNum += 1
+            End If
+            If Not d37Result OrElse Not d38Result OrElse Not d39Result Then
+                kanki += 1
+                syokenFlg = True
+            End If
+            '血中脂質
+            Dim d35 As String = Util.checkDBNullValue(rsKenD1.Fields("D35").Value)
+            Dim d36 As String = Util.checkDBNullValue(rsKenD1.Fields("D36").Value)
+            Dim d35Result As Boolean = checkBaseValue(d35, "ＨＤＬ－ｺﾚｽﾃﾛｰﾙ", sex)
+            Dim d36Result As Boolean = checkBaseValue(d36, "中性脂肪", sex)
+            If d35 <> "" Then
+                sisituJNum += 1
+            End If
+            If Not d35Result OrElse Not d36Result Then
+                sisitu += 1
+                syokenFlg = True
+            End If
+            '血糖
+            Dim d49 As String = Util.checkDBNullValue(rsKenD1.Fields("D49").Value)
+            Dim d49Result As Boolean = checkBaseValue(d49, "血糖", sex)
+            If d49 <> "" Then
+                ketoJNum += 1
+            End If
+            If Not d49Result Then
+                keto += 1
+                syokenFlg = True
+            End If
+            '尿糖
+            Dim d22 As String = Util.checkDBNullValue(rsKenD1.Fields("D22").Value)
+            If d22 <> "" Then
+                nyotoJNum += 1
+            End If
+            If d22 = "3" OrElse d22 = "4" OrElse d22 = "5" Then
+                nyoto += 1
+                syokenFlg = True
+            End If
+            '尿蛋白
+            Dim d21 As String = Util.checkDBNullValue(rsKenD1.Fields("D21").Value)
+            If d21 <> "" Then
+                nyotanJNum += 1
+            End If
+            If d21 = "3" OrElse d21 = "4" OrElse d21 = "5" Then
+                nyotan += 1
+                syokenFlg = True
+            End If
+            '心電図
+            Dim d28 As String = Util.checkDBNullValue(rsKenD1.Fields("D28").Value)
+            If d28 <> "" Then
+                ecgJNum += 1
+            End If
+            If d28 <> "" AndAlso d28 <> NP_WORD Then
+                ecg += 1
+                syokenFlg = True
+            End If
 
-
-
-
+            If syokenFlg Then
+                sNum += 1
+            End If
+            jNum += 1
             rsKenD1.MoveNext()
         End While
 
         'A4データの集計処理
         While Not rsKenD2.EOF
+            '所見有無判定用
+            Dim syokenFlg As Boolean = False
+
             '性別
             Dim sex As String = Util.checkDBNullValue(rsKenD2.Fields("Sex").Value)
 
@@ -329,9 +409,11 @@ Public Class 健診結果報告書
             End If
             If d12 = "2" OrElse d14 = "2" Then
                 ear1000Hz += 1
+                syokenFlg = True
             End If
             If d13 = "2" OrElse d15 = "2" Then
                 ear4000Hz += 1
+                syokenFlg = True
             End If
             '胸部Ｘ線
             Dim d63 As String = Util.checkDBNullValue(rsKenD2.Fields("D63").Value)
@@ -341,6 +423,7 @@ Public Class 健診結果報告書
             End If
             If d63 <> "" AndAlso d63 <> NP_WORD Then
                 xp += 1
+                syokenFlg = True
             End If
             '血圧
             Dim d16 As String = Util.checkDBNullValue(rsKenD2.Fields("D16").Value)
@@ -352,6 +435,7 @@ Public Class 健診結果報告書
             End If
             If Not d16Result OrElse Not d17Result Then
                 bp += 1
+                syokenFlg = True
             End If
             '貧血
             Dim d46 As String = Util.checkDBNullValue(rsKenD2.Fields("D46").Value)
@@ -361,10 +445,76 @@ Public Class 健診結果報告書
             End If
             If Not d46Result Then
                 hin += 1
+                syokenFlg = True
+            End If
+            '肝機能
+            Dim d23 As String = Util.checkDBNullValue(rsKenD2.Fields("D23").Value)
+            Dim d24 As String = Util.checkDBNullValue(rsKenD2.Fields("D24").Value)
+            Dim d25 As String = Util.checkDBNullValue(rsKenD2.Fields("D25").Value)
+            Dim d23Result As Boolean = checkBaseValue(d23, "ＧＯＴ", sex)
+            Dim d24Result As Boolean = checkBaseValue(d24, "ＧＰＴ", sex)
+            Dim d25Result As Boolean = checkBaseValue(d25, "γ－ＧＴＰ", sex)
+            If d23 <> "" Then
+                kankiJNum += 1
+            End If
+            If Not d23Result OrElse Not d24Result OrElse Not d25Result Then
+                kanki += 1
+                syokenFlg = True
+            End If
+            '血中脂質
+            Dim d21 As String = Util.checkDBNullValue(rsKenD2.Fields("D21").Value)
+            Dim d20 As String = Util.checkDBNullValue(rsKenD2.Fields("D20").Value)
+            Dim d21Result As Boolean = checkBaseValue(d21, "ＨＤＬ－ｺﾚｽﾃﾛｰﾙ", sex)
+            Dim d20Result As Boolean = checkBaseValue(d20, "中性脂肪", sex)
+            If d21 <> "" Then
+                sisituJNum += 1
+            End If
+            If Not d21Result OrElse Not d20Result Then
+                sisitu += 1
+                syokenFlg = True
+            End If
+            '血糖
+            Dim d33 As String = Util.checkDBNullValue(rsKenD2.Fields("D33").Value)
+            Dim d33Result As Boolean = checkBaseValue(d33, "血糖", sex)
+            If d33 <> "" Then
+                ketoJNum += 1
+            End If
+            If Not d33Result Then
+                keto += 1
+                syokenFlg = True
+            End If
+            '尿糖
+            Dim d36 As String = Util.checkDBNullValue(rsKenD2.Fields("D36").Value)
+            If d36 <> "" Then
+                nyotoJNum += 1
+            End If
+            If d36 = "3" OrElse d36 = "4" OrElse d36 = "5" Then
+                nyoto += 1
+                syokenFlg = True
+            End If
+            '尿蛋白
+            Dim d37 As String = Util.checkDBNullValue(rsKenD2.Fields("D37").Value)
+            If d37 <> "" Then
+                nyotanJNum += 1
+            End If
+            If d37 = "3" OrElse d37 = "4" OrElse d37 = "5" Then
+                nyotan += 1
+                syokenFlg = True
+            End If
+            '心電図
+            Dim d75 As String = Util.checkDBNullValue(rsKenD2.Fields("D75").Value)
+            If d75 <> "" Then
+                ecgJNum += 1
+            End If
+            If d75 <> "" AndAlso d75 <> NP_WORD Then
+                ecg += 1
+                syokenFlg = True
             End If
 
-
-
+            If syokenFlg Then
+                sNum += 1
+            End If
+            jNum += 1
             rsKenD2.MoveNext()
         End While
 
@@ -384,7 +534,29 @@ Public Class 健診結果報告書
         '貧血
         dtResult.Rows(4).Item("JNum") = hinJNum
         dtResult.Rows(4).Item("SNum") = hin
+        '肝機能
+        dtResult.Rows(5).Item("JNum") = kankiJNum
+        dtResult.Rows(5).Item("SNum") = kanki
+        '血中脂質
+        dtResult.Rows(6).Item("JNum") = sisituJNum
+        dtResult.Rows(6).Item("SNum") = sisitu
+        '血糖
+        dtResult.Rows(7).Item("JNum") = ketoJNum
+        dtResult.Rows(7).Item("SNum") = keto
+        '尿糖
+        dtResult.Rows(8).Item("JNum") = nyotoJNum
+        dtResult.Rows(8).Item("SNum") = nyoto
+        '尿蛋白
+        dtResult.Rows(9).Item("JNum") = nyotanJNum
+        dtResult.Rows(9).Item("SNum") = nyotan
+        '心電図
+        dtResult.Rows(10).Item("JNum") = ecgJNum
+        dtResult.Rows(10).Item("SNum") = ecg
 
+        '受診者数
+        totalLabel.Text = jNum
+        '所見者数
+        syokenLabel.Text = sNum
 
     End Sub
 

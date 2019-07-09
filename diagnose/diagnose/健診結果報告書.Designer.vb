@@ -37,6 +37,14 @@ Partial Class 健診結果報告書
         Me.syokenLabel = New System.Windows.Forms.Label()
         Me.sijiLabel = New System.Windows.Forms.Label()
         Me.dgvResult = New System.Windows.Forms.DataGridView()
+        Me.sijiWordBox = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.chkSaiken = New System.Windows.Forms.CheckBox()
+        Me.chkSeisa = New System.Windows.Forms.CheckBox()
+        Me.chkKaryo = New System.Windows.Forms.CheckBox()
+        Me.Label10 = New System.Windows.Forms.Label()
         CType(Me.dgvResult, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -192,11 +200,102 @@ Partial Class 健診結果報告書
         Me.dgvResult.Size = New System.Drawing.Size(337, 242)
         Me.dgvResult.TabIndex = 14
         '
+        'sijiWordBox
+        '
+        Me.sijiWordBox.ImeMode = System.Windows.Forms.ImeMode.Hiragana
+        Me.sijiWordBox.Location = New System.Drawing.Point(418, 407)
+        Me.sijiWordBox.Name = "sijiWordBox"
+        Me.sijiWordBox.Size = New System.Drawing.Size(338, 19)
+        Me.sijiWordBox.TabIndex = 15
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(416, 367)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(101, 12)
+        Me.Label7.TabIndex = 16
+        Me.Label7.Text = "医師指示キーワード"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.ForeColor = System.Drawing.Color.Blue
+        Me.Label8.Location = New System.Drawing.Point(518, 388)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(211, 12)
+        Me.Label8.TabIndex = 17
+        Me.Label8.Text = "※全角カンマ（、）で区切って複数入力可能"
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.ForeColor = System.Drawing.Color.Red
+        Me.Label9.Location = New System.Drawing.Point(518, 368)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(83, 12)
+        Me.Label9.TabIndex = 18
+        Me.Label9.Text = "(デフォルト設定："
+        '
+        'chkSaiken
+        '
+        Me.chkSaiken.AutoSize = True
+        Me.chkSaiken.Checked = True
+        Me.chkSaiken.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkSaiken.Location = New System.Drawing.Point(604, 367)
+        Me.chkSaiken.Name = "chkSaiken"
+        Me.chkSaiken.Size = New System.Drawing.Size(60, 16)
+        Me.chkSaiken.TabIndex = 19
+        Me.chkSaiken.Text = "要再検"
+        Me.chkSaiken.UseVisualStyleBackColor = True
+        '
+        'chkSeisa
+        '
+        Me.chkSeisa.AutoSize = True
+        Me.chkSeisa.Checked = True
+        Me.chkSeisa.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkSeisa.Location = New System.Drawing.Point(669, 367)
+        Me.chkSeisa.Name = "chkSeisa"
+        Me.chkSeisa.Size = New System.Drawing.Size(60, 16)
+        Me.chkSeisa.TabIndex = 20
+        Me.chkSeisa.Text = "要精査"
+        Me.chkSeisa.UseVisualStyleBackColor = True
+        '
+        'chkKaryo
+        '
+        Me.chkKaryo.AutoSize = True
+        Me.chkKaryo.Checked = True
+        Me.chkKaryo.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkKaryo.Location = New System.Drawing.Point(735, 367)
+        Me.chkKaryo.Name = "chkKaryo"
+        Me.chkKaryo.Size = New System.Drawing.Size(60, 16)
+        Me.chkKaryo.TabIndex = 21
+        Me.chkKaryo.Text = "要加療"
+        Me.chkKaryo.UseVisualStyleBackColor = True
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.ForeColor = System.Drawing.Color.Red
+        Me.Label10.Location = New System.Drawing.Point(791, 368)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(9, 12)
+        Me.Label10.TabIndex = 22
+        Me.Label10.Text = ")"
+        '
         '健診結果報告書
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(735, 615)
+        Me.ClientSize = New System.Drawing.Size(932, 615)
+        Me.Controls.Add(Me.Label10)
+        Me.Controls.Add(Me.chkKaryo)
+        Me.Controls.Add(Me.chkSeisa)
+        Me.Controls.Add(Me.chkSaiken)
+        Me.Controls.Add(Me.Label9)
+        Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.sijiWordBox)
         Me.Controls.Add(Me.dgvResult)
         Me.Controls.Add(Me.sijiLabel)
         Me.Controls.Add(Me.syokenLabel)
@@ -234,4 +333,12 @@ Partial Class 健診結果報告書
     Friend WithEvents syokenLabel As System.Windows.Forms.Label
     Friend WithEvents sijiLabel As System.Windows.Forms.Label
     Friend WithEvents dgvResult As System.Windows.Forms.DataGridView
+    Friend WithEvents sijiWordBox As System.Windows.Forms.TextBox
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents Label9 As System.Windows.Forms.Label
+    Friend WithEvents chkSaiken As System.Windows.Forms.CheckBox
+    Friend WithEvents chkSeisa As System.Windows.Forms.CheckBox
+    Friend WithEvents chkKaryo As System.Windows.Forms.CheckBox
+    Friend WithEvents Label10 As System.Windows.Forms.Label
 End Class

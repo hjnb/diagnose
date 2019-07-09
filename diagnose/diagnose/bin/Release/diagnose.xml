@@ -647,13 +647,14 @@ diagnose
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
-</member><member name="M:diagnose.健診結果報告書.displayDgvResult(System.String,System.String,System.String)">
+</member><member name="M:diagnose.健診結果報告書.displayDgvResult(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
 	<summary>
  結果人数表示
  </summary>
 	<param name="ind">事業所名</param>
 	<param name="fromYmd">from日付</param>
 	<param name="toYmd">to日付</param>
+	<param name="sijiList">医師指示対象文字列リスト</param>
 	<remarks></remarks>
 </member><member name="M:diagnose.健診結果報告書.checkBaseValue(System.String,System.String,System.String)">
 	<summary>

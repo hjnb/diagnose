@@ -221,8 +221,9 @@ Public Class 健診結果報告書
     ''' <param name="ind">事業所名</param>
     ''' <param name="fromYmd">from日付</param>
     ''' <param name="toYmd">to日付</param>
+    ''' <param name="sijiList">医師指示対象文字列リスト</param>
     ''' <remarks></remarks>
-    Private Sub displayDgvResult(ind As String, fromYmd As String, toYmd As String)
+    Private Sub displayDgvResult(ind As String, fromYmd As String, toYmd As String, sijiList As List(Of String))
         '内容クリア
         For Each row As DataRow In dtResult.Rows
             row("JNum") = "" '実施者数
@@ -385,6 +386,16 @@ Public Class 健診結果報告書
                 ecg += 1
                 syokenFlg = True
             End If
+            '判定　医師指示に該当するかチェック
+            Dim d72 As String = Util.checkDBNullValue(rsKenD1.Fields("D72").Value)
+            Dim d73 As String = Util.checkDBNullValue(rsKenD1.Fields("D73").Value)
+            Dim d74 As String = Util.checkDBNullValue(rsKenD1.Fields("D74").Value)
+            For Each keyWord As String In sijiList
+                If d72.IndexOf(keyWord) >= 0 OrElse d73.IndexOf(keyWord) >= 0 OrElse d74.IndexOf(keyWord) >= 0 Then
+                    drInstruct += 1
+                    Exit For
+                End If
+            Next
 
             If syokenFlg Then
                 sNum += 1
@@ -512,6 +523,18 @@ Public Class 健診結果報告書
                 ecg += 1
                 syokenFlg = True
             End If
+            '判定　医師指示に該当するかチェック
+            Dim d76 As String = Util.checkDBNullValue(rsKenD2.Fields("D76").Value)
+            Dim d77 As String = Util.checkDBNullValue(rsKenD2.Fields("D77").Value)
+            Dim d78 As String = Util.checkDBNullValue(rsKenD2.Fields("D78").Value)
+            Dim d79 As String = Util.checkDBNullValue(rsKenD2.Fields("D79").Value)
+            Dim d80 As String = Util.checkDBNullValue(rsKenD2.Fields("D80").Value)
+            For Each keyWord As String In sijiList
+                If d76.IndexOf(keyWord) >= 0 OrElse d77.IndexOf(keyWord) >= 0 OrElse d78.IndexOf(keyWord) >= 0 OrElse d79.IndexOf(keyWord) >= 0 OrElse d80.IndexOf(keyWord) >= 0 Then
+                    drInstruct += 1
+                    Exit For
+                End If
+            Next
 
             If syokenFlg Then
                 sNum += 1
@@ -559,6 +582,8 @@ Public Class 健診結果報告書
         totalLabel.Text = jNum
         '所見者数
         syokenLabel.Text = sNum
+        '医師指示数
+        sijiLabel.Text = drInstruct
 
     End Sub
 
@@ -614,8 +639,33 @@ Public Class 健診結果報告書
         'to日付
         Dim toYmd As String = toYmdBox.getADStr()
 
+        '医師指示の対象とする文字列
+        Dim sijiTxt As String = sijiWordBox.Text
+        If sijiTxt <> "" AndAlso Not System.Text.RegularExpressions.Regex.IsMatch(sijiTxt, "^[^、]+(、[^、]+)*$") Then
+            MsgBox("指示対象とする文字列を全角カンマで区切って入力して下さい。" & Environment.NewLine & "(例：精密検査、受診、消化器科、循環器科)", MsgBoxStyle.Exclamation)
+            sijiWordBox.Focus()
+            Return
+        End If
+
+        '医師指示文字列リスト作成
+        Dim sijiList As New List(Of String)
+        'デフォルトの指示文字列追加
+        If chkSaiken.Checked Then '要再検チェック
+            sijiList.Add(chkSaiken.Text)
+        End If
+        If chkSeisa.Checked Then '要精査チェック
+            sijiList.Add(chkSeisa.Text)
+        End If
+        If chkKaryo.Checked Then '要加療チェック
+            sijiList.Add(chkKaryo.Text)
+        End If
+
+        If sijiTxt <> "" Then
+            sijiList.AddRange(sijiTxt.Split("、")) '入力された医師指示文字列追加
+        End If
+
         'データ表示
-        displayDgvResult(ind, fromYmd, toYmd)
+        displayDgvResult(ind, fromYmd, toYmd, sijiList)
     End Sub
 
     ''' <summary>
@@ -659,8 +709,7 @@ Public Class 健診結果報告書
         '所見者数
         oSheet.Range("D20").Value = syokenLabel.Text
         '医師指示数
-        'とりあえず保留
-        '
+        oSheet.Range("D21").Value = sijiLabel.Text
 
         objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
         objExcel.ScreenUpdating = True

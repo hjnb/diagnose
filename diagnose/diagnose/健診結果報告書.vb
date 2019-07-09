@@ -1,4 +1,6 @@
 ﻿Imports System.Data.OleDb
+Imports Microsoft.Office.Interop
+Imports System.Runtime.InteropServices
 
 Public Class 健診結果報告書
 
@@ -614,5 +616,73 @@ Public Class 健診結果報告書
 
         'データ表示
         displayDgvResult(ind, fromYmd, toYmd)
+    End Sub
+
+    ''' <summary>
+    ''' 印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+        '事業所名
+        Dim ind As String = indBox.Text
+        If ind = "" Then
+            MsgBox("事業所名を選択して下さい。", MsgBoxStyle.Exclamation)
+            indBox.DroppedDown = True
+            Return
+        End If
+
+        '書き込みデータ作成
+        Dim dataArray(10, 1) As String
+        For i As Integer = 0 To dgvResult.Rows.Count - 1
+            dataArray(i, 0) = Util.checkDBNullValue(dgvResult("JNum", i).Value)
+            dataArray(i, 1) = Util.checkDBNullValue(dgvResult("SNum", i).Value)
+        Next
+
+        'エクセル
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(topForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("報告書改")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '事業所名
+        oSheet.Range("D3").Value = ind
+        '受診日
+        oSheet.Range("D4").Value = fromYmdBox.getWarekiStr().Replace("/", ".") & " ～ " & toYmdBox.getWarekiStr().Replace("/", ".")
+        '各項目の実施者数、所見者数
+        oSheet.Range("D7", "E17").Value = dataArray
+        '受診者数
+        oSheet.Range("D19").Value = totalLabel.Text
+        '所見者数
+        oSheet.Range("D20").Value = syokenLabel.Text
+        '医師指示数
+        'とりあえず保留
+        '
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        Dim printState As String = Util.getIniString("System", "Printer", topForm.iniFilePath)
+        If printState = "Y" Then
+            oSheet.PrintOut()
+        Else
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
     End Sub
 End Class

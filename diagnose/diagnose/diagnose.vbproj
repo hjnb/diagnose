@@ -242,6 +242,9 @@
     <EmbeddedResource Include="受診者マスタ.resx">
       <DependentUpon>受診者マスタ.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="受診者一覧.resx">
+      <DependentUpon>受診者一覧.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="月別受診状況.resx">
       <DependentUpon>月別受診状況.vb</DependentUpon>
     </EmbeddedResource>

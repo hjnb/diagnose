@@ -22,8 +22,121 @@ Partial Class 保守
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        components = New System.ComponentModel.Container
+        Me.indList = New System.Windows.Forms.ListBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.dgvUsrM = New System.Windows.Forms.DataGridView()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.kanaBox = New System.Windows.Forms.TextBox()
+        Me.btnExecute = New System.Windows.Forms.Button()
+        Me.kanaLabel = New System.Windows.Forms.Label()
+        CType(Me.dgvUsrM, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'indList
+        '
+        Me.indList.BackColor = System.Drawing.SystemColors.Control
+        Me.indList.FormattingEnabled = True
+        Me.indList.ItemHeight = 12
+        Me.indList.Location = New System.Drawing.Point(43, 51)
+        Me.indList.Name = "indList"
+        Me.indList.Size = New System.Drawing.Size(191, 448)
+        Me.indList.TabIndex = 1
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.Label1.ForeColor = System.Drawing.Color.Blue
+        Me.Label1.Location = New System.Drawing.Point(283, 18)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(122, 15)
+        Me.Label1.TabIndex = 2
+        Me.Label1.Text = "※　ｶﾅ氏名の変更"
+        '
+        'dgvUsrM
+        '
+        Me.dgvUsrM.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvUsrM.Location = New System.Drawing.Point(285, 51)
+        Me.dgvUsrM.Name = "dgvUsrM"
+        Me.dgvUsrM.RowTemplate.Height = 21
+        Me.dgvUsrM.Size = New System.Drawing.Size(307, 380)
+        Me.dgvUsrM.TabIndex = 3
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("MS UI Gothic", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.Label2.Location = New System.Drawing.Point(306, 449)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(49, 14)
+        Me.Label2.TabIndex = 4
+        Me.Label2.Text = "変更前"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("MS UI Gothic", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.Label3.Location = New System.Drawing.Point(306, 481)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(49, 14)
+        Me.Label3.TabIndex = 5
+        Me.Label3.Text = "変更後"
+        '
+        'kanaBox
+        '
+        Me.kanaBox.Font = New System.Drawing.Font("MS UI Gothic", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.kanaBox.ImeMode = System.Windows.Forms.ImeMode.KatakanaHalf
+        Me.kanaBox.Location = New System.Drawing.Point(368, 476)
+        Me.kanaBox.Name = "kanaBox"
+        Me.kanaBox.Size = New System.Drawing.Size(129, 23)
+        Me.kanaBox.TabIndex = 6
+        '
+        'btnExecute
+        '
+        Me.btnExecute.Location = New System.Drawing.Point(522, 472)
+        Me.btnExecute.Name = "btnExecute"
+        Me.btnExecute.Size = New System.Drawing.Size(70, 30)
+        Me.btnExecute.TabIndex = 7
+        Me.btnExecute.Text = "Run"
+        Me.btnExecute.UseVisualStyleBackColor = True
+        '
+        'kanaLabel
+        '
+        Me.kanaLabel.AutoSize = True
+        Me.kanaLabel.Font = New System.Drawing.Font("MS UI Gothic", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.kanaLabel.ForeColor = System.Drawing.Color.Blue
+        Me.kanaLabel.Location = New System.Drawing.Point(367, 447)
+        Me.kanaLabel.Name = "kanaLabel"
+        Me.kanaLabel.Size = New System.Drawing.Size(0, 16)
+        Me.kanaLabel.TabIndex = 8
+        '
+        '保守
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(698, 592)
+        Me.Controls.Add(Me.kanaLabel)
+        Me.Controls.Add(Me.btnExecute)
+        Me.Controls.Add(Me.kanaBox)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.dgvUsrM)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.indList)
+        Me.Name = "保守"
         Me.Text = "保守"
+        CType(Me.dgvUsrM, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
     End Sub
+    Friend WithEvents indList As System.Windows.Forms.ListBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents dgvUsrM As System.Windows.Forms.DataGridView
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents kanaBox As System.Windows.Forms.TextBox
+    Friend WithEvents btnExecute As System.Windows.Forms.Button
+    Friend WithEvents kanaLabel As System.Windows.Forms.Label
 End Class

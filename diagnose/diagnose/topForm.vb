@@ -32,7 +32,6 @@
     Dim resultReportForm As 健診結果報告書
     Dim maintenanceForm As 保守
     Dim dbArrangementForm As DB整理
-    Dim enqueteForm As アンケートシステム
 
     ''' <summary>
     ''' loadイベント
@@ -217,19 +216,6 @@
         If IsNothing(dbArrangementForm) OrElse dbArrangementForm.IsDisposed Then
             dbArrangementForm = New DB整理()
             dbArrangementForm.Show()
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' アンケートシステムボタンクリックイベント
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
-    Private Sub btnEnquete_Click(sender As System.Object, e As System.EventArgs) Handles btnEnquete.Click
-        If IsNothing(enqueteForm) OrElse enqueteForm.IsDisposed Then
-            enqueteForm = New アンケートシステム()
-            enqueteForm.Show()
         End If
     End Sub
 End Class

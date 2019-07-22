@@ -150,12 +150,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Util.vb" />
-    <Compile Include="アンケートシステム.Designer.vb">
-      <DependentUpon>アンケートシステム.vb</DependentUpon>
-    </Compile>
-    <Compile Include="アンケートシステム.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="事業所マスタ.Designer.vb">
       <DependentUpon>事業所マスタ.vb</DependentUpon>
     </Compile>
@@ -220,6 +214,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="beforePrintForm.resx">
       <DependentUpon>beforePrintForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DB整理.resx">
+      <DependentUpon>DB整理.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

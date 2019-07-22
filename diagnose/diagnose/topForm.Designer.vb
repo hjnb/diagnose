@@ -28,7 +28,6 @@ Partial Class topForm
         Me.btnImplementationHistory = New System.Windows.Forms.Button()
         Me.btnMaintenance = New System.Windows.Forms.Button()
         Me.btnResultReport = New System.Windows.Forms.Button()
-        Me.btnEnquete = New System.Windows.Forms.Button()
         Me.btnDBArrangement = New System.Windows.Forms.Button()
         Me.btnExamineeList = New System.Windows.Forms.Button()
         Me.btnOfficeMaster = New System.Windows.Forms.Button()
@@ -95,16 +94,6 @@ Partial Class topForm
         Me.btnResultReport.Text = "健診結果報告書"
         Me.btnResultReport.UseVisualStyleBackColor = True
         '
-        'btnEnquete
-        '
-        Me.btnEnquete.Font = New System.Drawing.Font("MS UI Gothic", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btnEnquete.Location = New System.Drawing.Point(523, 382)
-        Me.btnEnquete.Name = "btnEnquete"
-        Me.btnEnquete.Size = New System.Drawing.Size(238, 65)
-        Me.btnEnquete.TabIndex = 16
-        Me.btnEnquete.Text = "アンケートシステム"
-        Me.btnEnquete.UseVisualStyleBackColor = True
-        '
         'btnDBArrangement
         '
         Me.btnDBArrangement.Font = New System.Drawing.Font("MS UI Gothic", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
@@ -156,7 +145,6 @@ Partial Class topForm
         Me.Controls.Add(Me.btnImplementationHistory)
         Me.Controls.Add(Me.btnMaintenance)
         Me.Controls.Add(Me.btnResultReport)
-        Me.Controls.Add(Me.btnEnquete)
         Me.Controls.Add(Me.btnDBArrangement)
         Me.Controls.Add(Me.btnExamineeList)
         Me.Controls.Add(Me.btnOfficeMaster)
@@ -173,7 +161,6 @@ Partial Class topForm
     Friend WithEvents btnImplementationHistory As System.Windows.Forms.Button
     Friend WithEvents btnMaintenance As System.Windows.Forms.Button
     Friend WithEvents btnResultReport As System.Windows.Forms.Button
-    Friend WithEvents btnEnquete As System.Windows.Forms.Button
     Friend WithEvents btnDBArrangement As System.Windows.Forms.Button
     Friend WithEvents btnExamineeList As System.Windows.Forms.Button
     Friend WithEvents btnOfficeMaster As System.Windows.Forms.Button

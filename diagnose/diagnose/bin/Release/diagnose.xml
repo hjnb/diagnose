@@ -523,6 +523,18 @@ diagnose
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:diagnose.DB整理.#ctor">
+	<summary>
+ コンストラクタ
+ </summary>
+	<remarks></remarks>
+</member><member name="M:diagnose.DB整理.btnExecute_Click(System.Object,System.EventArgs)">
+	<summary>
+ 実行ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="T:diagnose.保守.dgvRowHeaderCell">
 	<summary>
  行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
@@ -1006,13 +1018,6 @@ diagnose
 </member><member name="M:diagnose.topForm.btnDBArrangement_Click(System.Object,System.EventArgs)">
 	<summary>
  DB整理ボタンクリックイベント
- </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
-</member><member name="M:diagnose.topForm.btnEnquete_Click(System.Object,System.EventArgs)">
-	<summary>
- アンケートシステムボタンクリックイベント
  </summary>
 	<param name="sender"></param>
 	<param name="e"></param>

@@ -245,6 +245,13 @@ diagnose
  データグリッドビュー初期設定
  </summary>
 	<remarks></remarks>
+</member><member name="M:diagnose.事業所別_実施履歴.latest7DateSet(System.String,System.Data.DataTable)">
+	<summary>
+ 直近7回分の健診日を表示
+ </summary>
+	<param name="ind">事業所名</param>
+	<param name="dt">表示用データテーブル</param>
+	<remarks></remarks>
 </member><member name="M:diagnose.事業所別_実施履歴.displayDgvList(System.String)">
 	<summary>
  対象事業所のリスト表示

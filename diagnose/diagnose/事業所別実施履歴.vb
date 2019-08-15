@@ -999,7 +999,7 @@ Public Class 事業所別_実施履歴
                     '肝炎　ＨＢｓ抗原
                     result(49, i * 2) = Util.checkDBNullValue(rs.Fields("D18").Value)
                     '　　　ＨＣＶ抗体
-                    result(50, i * 2) = Util.checkDBNullValue(rs.Fields("D19").Value)
+                    result(50, i * 2) = Util.checkDBNullValue(rs.Fields("D20").Value)
                     '便潜血　１日目
                     result(51, i * 2) = ""
                     '　　　　２日目

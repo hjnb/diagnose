@@ -36,8 +36,8 @@ Partial Class 事業所別_実施履歴
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.nyPanel = New System.Windows.Forms.Panel()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.n3textBox = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.dgvList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
@@ -185,6 +185,13 @@ Partial Class 事業所別_実施履歴
         Me.nyPanel.TabIndex = 13
         Me.nyPanel.Visible = False
         '
+        'n3textBox
+        '
+        Me.n3textBox.Location = New System.Drawing.Point(19, 23)
+        Me.n3textBox.Name = "n3textBox"
+        Me.n3textBox.Size = New System.Drawing.Size(111, 19)
+        Me.n3textBox.TabIndex = 1
+        '
         'Label1
         '
         Me.Label1.AutoSize = True
@@ -193,13 +200,6 @@ Partial Class 事業所別_実施履歴
         Me.Label1.Size = New System.Drawing.Size(100, 12)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "長3に入れる文字列"
-        '
-        'n3textBox
-        '
-        Me.n3textBox.Location = New System.Drawing.Point(19, 23)
-        Me.n3textBox.Name = "n3textBox"
-        Me.n3textBox.Size = New System.Drawing.Size(111, 19)
-        Me.n3textBox.TabIndex = 1
         '
         '事業所別_実施履歴
         '

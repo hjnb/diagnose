@@ -848,16 +848,17 @@ Public Class 事業所別_実施履歴
                     '職種 とりあえず空白
                     result(2, i * 2) = ""
                     '既往歴
-                    Dim d14 As String = Util.checkDBNullValue(rs.Fields("D14").Value)
-                    If d14 = "1" Then
-                        result(3, i * 2) = "なし"
-                        result(4, i * 2) = ""
+                    Dim d15 As String = Util.checkDBNullValue(rs.Fields("D15").Value) '既往歴
+                    Dim d12 As String = Util.checkDBNullValue(rs.Fields("D12").Value) '自覚症状
+                    If d15 = "" Then
+                        result(3, i * 2) = d12
                     Else
-                        result(3, i * 2) = Util.checkDBNullValue(rs.Fields("D15").Value)
-                        result(4, i * 2) = ""
+                        If d12 = "なし" Then
+                            result(3, i * 2) = d15
+                        Else
+                            result(3, i * 2) = d15 & Environment.NewLine & d12
+                        End If
                     End If
-                    '自覚症状
-                    result(5, i * 2) = Util.checkDBNullValue(rs.Fields("D12").Value)
                     '他覚症状
                     result(6, i * 2) = ""
                     '内科診察
@@ -1009,9 +1010,184 @@ Public Class 事業所別_実施履歴
                     Dim d73 As String = Util.checkDBNullValue(rs.Fields("D73").Value)
                     Dim d74 As String = Util.checkDBNullValue(rs.Fields("D74").Value)
                     result(53, i * 2) = d72 & d73 & d74
+
+                    rs.Close()
                 Else
                     'A4データの場合
+                    'データ取得
+                    sql = "select * from Ken2 where Ind = '" & ind & "' and Kana = '" & kana & "' and Birth = '" & birth & "' and Ymd = '" & ymd & "'"
+                    Dim rs As New ADODB.Recordset
+                    rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
 
+                    '検診年月日
+                    result(0, i * 2) = ymd
+                    '年齢
+                    result(1, i * 2) = Util.calcAge(birth, ymd)
+                    '職種 とりあえず空白
+                    result(2, i * 2) = ""
+                    '既往歴・自覚症状
+                    Dim d5 As String = Util.checkDBNullValue(rs.Fields("D5").Value)
+                    Dim d6 As String = Util.checkDBNullValue(rs.Fields("D6").Value)
+                    If d5 <> "" AndAlso d6 <> "" Then
+                        result(3, i * 2) = d5 & Environment.NewLine & d6
+                    ElseIf d6 = "" Then
+                        result(3, i * 2) = d5
+                    End If
+                    '他覚症状
+                    result(6, i * 2) = ""
+                    '内科診察
+                    result(7, i * 2) = Util.checkDBNullValue(rs.Fields("D7").Value)
+                    '身長
+                    Dim height As Decimal = 0
+                    Dim heightStr As String = Util.checkDBNullValue(rs.Fields("D1").Value)
+                    If System.Text.RegularExpressions.Regex.IsMatch(heightStr, "^\d+(\.\d+)?$") Then
+                        height = CDec(heightStr)
+                    End If
+                    result(8, i * 2) = heightStr
+                    '体重
+                    Dim weight As Decimal = 0
+                    Dim weightStr As String = Util.checkDBNullValue(rs.Fields("D2").Value)
+                    If System.Text.RegularExpressions.Regex.IsMatch(weightStr, "^\d+(\.\d+)?$") Then
+                        weight = CDec(weightStr)
+                    End If
+                    result(9, i * 2) = weightStr
+                    'ＢＭＩ
+                    If height <> 0 AndAlso weight <> 0 Then
+                        Dim bmi As Decimal = Math.Round(weight / ((height / 100) * (height / 100)), 1, MidpointRounding.AwayFromZero)
+                        result(10, i * 2) = bmi
+                    Else
+                        result(10, i * 2) = ""
+                    End If
+                    '腹囲
+                    result(11, i * 2) = Util.checkDBNullValue(rs.Fields("D3").Value)
+                    '血圧最高
+                    result(12, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D16").Value), "最高血圧", baseValDt, sex)
+                    '　　最低
+                    result(13, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D17").Value), "最低血圧", baseValDt, sex)
+                    '視力　右
+                    result(14, i * 2) = Util.checkDBNullValue(rs.Fields("D8").Value) & " ( " & Util.checkDBNullValue(rs.Fields("D9").Value) & " )"
+                    '　　　左
+                    result(15, i * 2) = Util.checkDBNullValue(rs.Fields("D10").Value) & " ( " & Util.checkDBNullValue(rs.Fields("D11").Value) & " )"
+                    '聴力　右　1000Hz
+                    Dim d12 As String = Util.checkDBNullValue(rs.Fields("D12").Value)
+                    result(16, i * 2) = If(d12 = "1", "所見ﾅｼ", If(d12 = "2", "所見ｱﾘ", ""))
+                    '　　　　　4000Hz
+                    Dim d13 As String = Util.checkDBNullValue(rs.Fields("D13").Value)
+                    result(17, i * 2) = If(d13 = "1", "所見ﾅｼ", If(d13 = "2", "所見ｱﾘ", ""))
+                    '　　　左　1000Hz
+                    Dim d14 As String = Util.checkDBNullValue(rs.Fields("D14").Value)
+                    result(18, i * 2) = If(d14 = "1", "所見ﾅｼ", If(d14 = "2", "所見ｱﾘ", ""))
+                    '　　　　　4000Hz
+                    Dim d15 As String = Util.checkDBNullValue(rs.Fields("D15").Value)
+                    result(19, i * 2) = If(d15 = "1", "所見ﾅｼ", If(d15 = "2", "所見ｱﾘ", ""))
+                    '検査方法
+                    If d12 <> "" OrElse d13 <> "" OrElse d14 <> "" OrElse d15 <> "" Then
+                        result(20, i * 2) = "ｵｰｼﾞｵ"
+                    End If
+                    '胸部Ｘ線　直接・間接
+                    Dim d63 As String = Util.checkDBNullValue(rs.Fields("D63").Value)
+                    Dim d64 As String = Util.checkDBNullValue(rs.Fields("D64").Value)
+                    If d63 <> "" Then
+                        result(21, i * 2) = "直接"
+                        '　　　　　撮影年月日
+                        result(22, i * 2) = ymd
+                        '　　　　　フィルムNo
+                        result(23, i * 2) = ""
+                        '　　　　　診断
+                        result(24, i * 2) = d63 & d64
+                    End If
+                    '胃部　Ｘ線
+                    Dim d65 As String = Util.checkDBNullValue(rs.Fields("D65").Value)
+                    Dim d66 As String = Util.checkDBNullValue(rs.Fields("D66").Value)
+                    result(25, i * 2) = d65 & d66
+                    '　　　カメラ
+                    result(26, i * 2) = ""
+                    '心電図
+                    result(27, i * 2) = Util.checkDBNullValue(rs.Fields("D75").Value)
+                    '尿　糖
+                    Dim d36 As String = Util.checkDBNullValue(rs.Fields("D36").Value)
+                    If numberDic1.ContainsKey(d36) Then
+                        result(28, i * 2) = numberDic1(d36)
+                    End If
+                    '　　蛋白
+                    Dim d37 As String = Util.checkDBNullValue(rs.Fields("D37").Value)
+                    If numberDic1.ContainsKey(d37) Then
+                        result(29, i * 2) = numberDic1(d37)
+                    End If
+                    '　　ｳﾛﾋﾞﾘﾉｰｹﾞﾝ
+                    result(30, i * 2) = ""
+                    '　　潜血
+                    Dim d38 As String = Util.checkDBNullValue(rs.Fields("D38").Value)
+                    If numberDic1.ContainsKey(d38) Then
+                        result(31, i * 2) = numberDic1(d38)
+                    End If
+                    '貧血　白血球数
+                    result(32, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D44").Value), "白血球数", baseValDt, sex)
+                    '　　　赤血球数
+                    result(33, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D45").Value), "赤血球数", baseValDt, sex)
+                    '　　　血色素量
+                    result(34, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D46").Value), "血色素量", baseValDt, sex)
+                    '　　　ﾍﾏﾄｸﾘｯﾄ
+                    result(35, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D47").Value), "ﾍﾏﾄｸﾘｯﾄ", baseValDt, sex)
+                    '　　　血小板数
+                    result(36, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D48").Value), "血小板数", baseValDt, sex)
+                    '肝機能　ＧＯＴ
+                    result(37, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D23").Value), "ＧＯＴ", baseValDt, sex)
+                    '　　　　ＧＰＴ
+                    result(38, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D24").Value), "ＧＰＴ", baseValDt, sex)
+                    '　　　　γーＧＴＰ
+                    result(39, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D25").Value), "γ－ＧＴＰ", baseValDt, sex)
+                    '　　　　ＡＬＰ
+                    result(40, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D26").Value), "ＡＬＰ", baseValDt, sex)
+                    '血中脂質　総コレステロール
+                    result(41, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D19").Value), "総ｺﾚｽﾃﾛｰﾙ", baseValDt, sex)
+                    '　　　　　中性脂肪
+                    result(42, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D20").Value), "中性脂肪", baseValDt, sex)
+                    '　　　　　ＨＤＬコレステロール
+                    result(43, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D21").Value), "ＨＤＬ－ｺﾚｽﾃﾛｰﾙ", baseValDt, sex)
+                    '　　　　　ＬＤＬコレステロール
+                    result(44, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D22").Value), "ＬＤＬ－ｺﾚｽﾃﾛｰﾙ", baseValDt, sex)
+                    '糖尿　血糖（空腹時）
+                    result(45, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D33").Value), "血糖", baseValDt, sex)
+                    '　　　HbA1c
+                    result(46, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D34").Value), "ﾍﾓｸﾞﾛﾋﾞﾝＡ１ｃ", baseValDt, sex)
+                    '腎機能　尿酸
+                    result(47, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D32").Value), "尿酸", baseValDt, sex)
+                    '　　　　ｸﾚｱﾁﾆﾝ
+                    result(48, i * 2) = checkBaseValue(Util.checkDBNullValue(rs.Fields("D39").Value), "ｸﾚｱﾁﾆﾝ", baseValDt, sex)
+                    '肝炎　ＨＢｓ抗原
+                    Dim d72 As String = Util.checkDBNullValue(rs.Fields("D72").Value)
+                    If d72 = "1" Then
+                        result(49, i * 2) = "(－)"
+                    ElseIf d72 = "2" Then
+                        result(49, i * 2) = "(±)"
+                    ElseIf d72 = "3" Then
+                        result(49, i * 2) = "(＋)"
+                    End If
+                    '　　　ＨＣＶ抗体
+                    Dim d73 As String = Util.checkDBNullValue(rs.Fields("D73").Value)
+                    If d73 = "1" Then
+                        result(50, i * 2) = "感染なし"
+                    ElseIf d73 = "2" Then
+                        result(50, i * 2) = "感染あり"
+                    ElseIf d73 = "3" Then
+                        result(50, i * 2) = "要検査"
+                    End If
+                    '便潜血　１日目
+                    Dim d69 As String = Util.checkDBNullValue(rs.Fields("D69").Value)
+                    result(51, i * 2) = If(d69 = "1", "－", If(d69 = "2", "＋", ""))
+                    '　　　　２日目
+                    Dim d70 As String = Util.checkDBNullValue(rs.Fields("D70").Value)
+                    result(52, i * 2) = If(d70 = "1", "－", If(d70 = "2", "＋", ""))
+                    '医師の指示注意
+                    Dim d76 As String = Util.checkDBNullValue(rs.Fields("D76").Value)
+                    Dim d77 As String = Util.checkDBNullValue(rs.Fields("D77").Value)
+                    Dim d78 As String = Util.checkDBNullValue(rs.Fields("D78").Value)
+                    Dim d79 As String = Util.checkDBNullValue(rs.Fields("D79").Value)
+                    Dim d80 As String = Util.checkDBNullValue(rs.Fields("D80").Value)
+                    result(53, i * 2) = d76 & d77 & d78 & d79 & d80
+
+                    rs.Close()
                 End If
             End If
         Next

@@ -6,6 +6,23 @@ Public Class B5InputDataGridView
     '文字数制限用
     Private Const LIMIT_LENGTH_BYTE As Integer = 90
 
+    Protected Overrides Function ProcessDialogKey(keyData As System.Windows.Forms.Keys) As Boolean
+        Dim inputStr As String = Util.checkDBNullValue(Me.CurrentCell.Value)
+        If keyData = Keys.Enter AndAlso inputStr = "" Then
+            If 10 <= Me.CurrentCell.RowIndex AndAlso Me.CurrentCell.RowIndex <= 12 Then
+                Me.CurrentCell.Value = "なし"
+            End If
+        ElseIf keyData = Keys.Escape AndAlso (53 <= Me.CurrentCell.RowIndex AndAlso Me.CurrentCell.RowIndex <= 61) Then
+            Dim columnIndex As Integer = Me.CurrentCell.ColumnIndex
+            If columnIndex = 1 Then
+                Me.CurrentCell = Me(2, Me.CurrentCell.RowIndex)
+            ElseIf columnIndex = 2 Then
+                Me.CurrentCell = Me(1, Me.CurrentCell.RowIndex)
+            End If
+        End If
+        Return MyBase.ProcessDialogKey(keyData)
+    End Function
+
     Protected Overrides Function ProcessDataGridViewKey(e As System.Windows.Forms.KeyEventArgs) As Boolean
         Dim tb As DataGridViewTextBoxEditingControl = CType(Me.EditingControl, DataGridViewTextBoxEditingControl)
         If Not IsNothing(tb) AndAlso ((e.KeyCode = Keys.Left AndAlso tb.SelectionStart = 0) OrElse (e.KeyCode = Keys.Right AndAlso tb.SelectionStart = tb.TextLength)) Then

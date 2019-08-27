@@ -12,13 +12,14 @@ Public Class B5InputDataGridView
             If 10 <= Me.CurrentCell.RowIndex AndAlso Me.CurrentCell.RowIndex <= 12 Then
                 Me.CurrentCell.Value = "なし"
             End If
-        ElseIf keyData = Keys.Escape AndAlso (53 <= Me.CurrentCell.RowIndex AndAlso Me.CurrentCell.RowIndex <= 61) Then
+        ElseIf keyData = Keys.Tab AndAlso (53 <= Me.CurrentCell.RowIndex AndAlso Me.CurrentCell.RowIndex <= 61) Then
             Dim columnIndex As Integer = Me.CurrentCell.ColumnIndex
             If columnIndex = 1 Then
                 Me.CurrentCell = Me(2, Me.CurrentCell.RowIndex)
             ElseIf columnIndex = 2 Then
                 Me.CurrentCell = Me(1, Me.CurrentCell.RowIndex)
             End If
+            Return True
         End If
         Return MyBase.ProcessDialogKey(keyData)
     End Function

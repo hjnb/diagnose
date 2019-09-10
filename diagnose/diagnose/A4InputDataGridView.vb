@@ -114,6 +114,6 @@ Public Class A4InputDataGridView
     End Sub
 
     Private Sub A4InputDataGridView_MouseWheel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles Me.MouseWheel
-        Me.CurrentCell = Me(0, 0)
+        Me.CurrentCell = Me(0, Me.CurrentCell.RowIndex)
     End Sub
 End Class

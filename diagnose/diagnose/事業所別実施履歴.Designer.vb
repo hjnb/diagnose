@@ -38,6 +38,7 @@ Partial Class 事業所別_実施履歴
         Me.nyPanel = New System.Windows.Forms.Panel()
         Me.n3textBox = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.kanaButton = New System.Windows.Forms.Button()
         CType(Me.dgvList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
@@ -201,11 +202,22 @@ Partial Class 事業所別_実施履歴
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "長3に入れる文字列"
         '
+        'kanaButton
+        '
+        Me.kanaButton.Location = New System.Drawing.Point(1019, 66)
+        Me.kanaButton.Name = "kanaButton"
+        Me.kanaButton.Size = New System.Drawing.Size(50, 37)
+        Me.kanaButton.TabIndex = 14
+        Me.kanaButton.Text = "カナで昇順"
+        Me.kanaButton.UseVisualStyleBackColor = True
+        Me.kanaButton.Visible = False
+        '
         '事業所別_実施履歴
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1096, 659)
+        Me.Controls.Add(Me.kanaButton)
         Me.Controls.Add(Me.nyPanel)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
@@ -244,4 +256,5 @@ Partial Class 事業所別_実施履歴
     Friend WithEvents nyPanel As System.Windows.Forms.Panel
     Friend WithEvents n3textBox As System.Windows.Forms.TextBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents kanaButton As System.Windows.Forms.Button
 End Class

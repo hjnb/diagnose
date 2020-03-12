@@ -89,6 +89,7 @@ Public Class 事業所別_実施履歴
         If e.Alt AndAlso e.KeyCode = Keys.F12 Then
             '(Alt + F12)キー押下
             nyPanel.Visible = Not nyPanel.Visible
+            kanaButton.Visible = Not kanaButton.Visible
         End If
     End Sub
 
@@ -191,7 +192,7 @@ Public Class 事業所別_実施履歴
         Dim cnn As New ADODB.Connection
         cnn.Open(topForm.DB_Diagnose)
         Dim rs As New ADODB.Recordset
-        Dim sql As String = "select Nam, Birth, Int((Format(NOW(),'YYYYMMDD')-Format(Birth, 'YYYYMMDD'))/10000) as Age from UsrM where Ind = '" & ind & "' order by Kana"
+        Dim sql As String = "select Nam, Kana, Birth, Int((Format(NOW(),'YYYYMMDD')-Format(Birth, 'YYYYMMDD'))/10000) as Age from UsrM where Ind = '" & ind & "' order by Kana"
         rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
         Dim da As OleDbDataAdapter = New OleDbDataAdapter()
         Dim ds As DataSet = New DataSet()
@@ -227,6 +228,8 @@ Public Class 事業所別_実施履歴
             Else
                 .Size = New Size(769, 559)
             End If
+
+            .Columns("Kana").Visible = False
 
             With .Columns("Check")
                 .DisplayIndex = 0
@@ -1227,4 +1230,26 @@ Public Class 事業所別_実施履歴
             End If
         End If
     End Function
+
+    ''' <summary>
+    ''' 列ヘッダーダブルクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvList_ColumnHeaderMouseDoubleClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles dgvList.ColumnHeaderMouseDoubleClick
+        Dim targetColumn As DataGridViewColumn = dgvList.Columns(e.ColumnIndex) '選択列
+        dgvList.Sort(targetColumn, System.ComponentModel.ListSortDirection.Descending) '降順でソート
+    End Sub
+
+    ''' <summary>
+    ''' カナで昇順ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub kanaButton_Click(sender As System.Object, e As System.EventArgs) Handles kanaButton.Click
+        Dim targetColumn As DataGridViewColumn = dgvList.Columns("Kana") '選択列
+        dgvList.Sort(targetColumn, System.ComponentModel.ListSortDirection.Ascending) '昇順でソート
+    End Sub
 End Class

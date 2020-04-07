@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 
 Public Class B5基本項目一括印刷
     '健診項目○印用
-    Private circleTypeArray() As String = {"全項目(8640円)", "職員", "職員（肝炎有り）"}
+    Private circleTypeArray() As String = {"全項目(8800円)", "職員", "職員（肝炎有り）", "シンフォニー入居者"}
 
     '採血種類
     Private bloodTypeArray() As String = {"ケンシン１", "ケンシン１ + 肝炎", "ケンシン２", "キムラグミ", "メデック"}
@@ -343,6 +343,23 @@ Public Class B5基本項目一括印刷
             xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 7, cell.Top + 7, 17, 17).Fill.Transparency = 1
             '尿検査
             cell = DirectCast(oSheet.Cells(8, "H"), Excel.Range)
+            xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 5, cell.Top, 17, 17).Fill.Transparency = 1
+            '胸部Ｘ線
+            cell = DirectCast(oSheet.Cells(11, "H"), Excel.Range)
+            xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 5, cell.Top, 17, 17).Fill.Transparency = 1
+            '心電図
+            cell = DirectCast(oSheet.Cells(16, "H"), Excel.Range)
+            xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 20, cell.Top + 5, 17, 17).Fill.Transparency = 1
+            '血液
+            cell = DirectCast(oSheet.Cells(22, "H"), Excel.Range)
+            xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 5, cell.Top, 17, 17).Fill.Transparency = 1
+
+        ElseIf circleTypeBox.SelectedIndex = 3 Then 'シンフォニー入居者
+            '血圧
+            Dim cell As Excel.Range = DirectCast(oSheet.Cells(4, "I"), Excel.Range)
+            xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 7, cell.Top + 7, 17, 17).Fill.Transparency = 1
+            '聴打診
+            cell = DirectCast(oSheet.Cells(10, "H"), Excel.Range)
             xlShapes.AddShape(Microsoft.Office.Core.MsoAutoShapeType.msoShapeOval, cell.Left + 5, cell.Top, 17, 17).Fill.Transparency = 1
             '胸部Ｘ線
             cell = DirectCast(oSheet.Cells(11, "H"), Excel.Range)
